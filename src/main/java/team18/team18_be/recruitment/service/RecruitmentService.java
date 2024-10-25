@@ -18,11 +18,11 @@ import team18.team18_be.userInformation.repository.CompanyRepository;
 @Service
 public class RecruitmentService {
 
-  private RecruitmentRepository recruitmentRepository;
-  private RecruitmentContentRepository recruitmentContentRepository;
-  private CompanyRepository companyRepository;
+  private final RecruitmentRepository recruitmentRepository;
+  private final RecruitmentContentRepository recruitmentContentRepository;
+  private final CompanyRepository companyRepository;
 
-  private OpenAiService openAiService;
+  private final OpenAiService openAiService;
 
   public RecruitmentService(RecruitmentRepository recruitmentRepository,
       RecruitmentContentRepository recruitmentContentRepository, OpenAiService openAiService,

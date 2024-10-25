@@ -32,9 +32,9 @@ public class UserInformationController {
   }
 
   @PostMapping(value = "/sign")
-  public ResponseEntity<Void> fillInSign(@RequestParam MultipartFile signImg,
+  public ResponseEntity<Void> fillInSign(@RequestParam MultipartFile imageUrl,
       @LoginUser User user) {
-    userInformationService.fillInSign(signImg, user);
+    userInformationService.fillInSign(imageUrl, user);
     return ResponseEntity.noContent().build();
   }
 
@@ -45,8 +45,8 @@ public class UserInformationController {
 
   @PostMapping("/company")
   public ResponseEntity<Void> createCompany(@RequestPart CompanyRequest companyRequest,
-      @RequestPart MultipartFile logo, @LoginUser User user) {
-    userInformationService.createCompany(companyRequest, logo, user);
+      @RequestPart MultipartFile logoImage, @LoginUser User user) {
+    userInformationService.createCompany(companyRequest, logoImage, user);
     return ResponseEntity.ok().build();
   }
 

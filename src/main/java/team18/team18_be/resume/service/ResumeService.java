@@ -13,8 +13,8 @@ import team18.team18_be.resume.repository.ResumeRepository;
 @Service
 public class ResumeService {
 
-  private ResumeRepository resumeRepository;
-  private AuthRepository authRepository;
+  private final ResumeRepository resumeRepository;
+  private final AuthRepository authRepository;
 
   public ResumeService(ResumeRepository resumeRepository, AuthRepository authRepository) {
     this.resumeRepository = resumeRepository;
