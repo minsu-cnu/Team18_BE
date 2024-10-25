@@ -18,14 +18,15 @@ import team18.team18_be.userInformation.repository.CompanyRepository;
 @Service
 public class RecruitmentService {
 
-  private RecruitmentRepository recruitmentRepository;
-  private RecruitmentContentRepository recruitmentContentRepository;
-  private CompanyRepository companyRepository;
+  private final RecruitmentRepository recruitmentRepository;
+  private final RecruitmentContentRepository recruitmentContentRepository;
+  private final CompanyRepository companyRepository;
 
-  private OpenAiService openAiService;
+  private final OpenAiService openAiService;
 
   public RecruitmentService(RecruitmentRepository recruitmentRepository,
-      RecruitmentContentRepository recruitmentContentRepository, OpenAiService openAiService,CompanyRepository companyRepository) {
+      RecruitmentContentRepository recruitmentContentRepository, OpenAiService openAiService,
+      CompanyRepository companyRepository) {
     this.recruitmentRepository = recruitmentRepository;
     this.recruitmentContentRepository = recruitmentContentRepository;
     this.openAiService = openAiService;
@@ -43,7 +44,8 @@ public class RecruitmentService {
     RecruitmentContent recruitmentContent = recruitmentContentRepository.save(
         new RecruitmentContent(koreanDetailedDescription, vietnameseDetailedDescription));
     recruitmentRepository.save(
-        mapRecruitmentRequestToRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,recruitmentContent));
+        mapRecruitmentRequestToRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
+            recruitmentContent));
 
   }
 
@@ -73,7 +75,7 @@ public class RecruitmentService {
   }
 
   private Recruitment mapRecruitmentRequestToRecruitment(String koreanTitle, String vietnameseTitle,
-      RecruitmentRequest recruitmentRequest,RecruitmentContent recruitmentContent) {
+      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent) {
     return new Recruitment(koreanTitle, vietnameseTitle, recruitmentRequest.companySize(),
         recruitmentRequest.area(), recruitmentRequest.salary(), recruitmentRequest.workDuration(),
         recruitmentRequest.workDays(), recruitmentRequest.workType(),

@@ -46,12 +46,13 @@ public class ApplyController {
   }
 
   @GetMapping("/all")
-  public ResponseEntity<List<RecruitmentsOfApplierResponse>> searchMyAppliedRecruitments(@LoginUser User user){
+  public ResponseEntity<List<RecruitmentsOfApplierResponse>> searchMyAppliedRecruitments(
+      @LoginUser User user) {
     return ResponseEntity.ok(applyService.SearchMyAppliedRecruitments(user));
   }
 
   @GetMapping()
-  public ResponseEntity<MandatoryResponse> checkMandatory(@LoginUser User user){
+  public ResponseEntity<MandatoryResponse> checkMandatory(@LoginUser User user) {
     return ResponseEntity.ok(applyService.checkMandatory(user));
   }
 }

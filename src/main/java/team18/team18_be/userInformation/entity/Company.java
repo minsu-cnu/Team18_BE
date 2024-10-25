@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import team18.team18_be.auth.entity.User;
 
@@ -47,7 +46,10 @@ public class Company {
     this.user = user;
   }
 
-  public Long getId() {return id;}
+  public Long getId() {
+    return id;
+  }
+
   public String getName() {
     return name;
   }

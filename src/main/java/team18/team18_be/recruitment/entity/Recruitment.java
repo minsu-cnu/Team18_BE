@@ -40,7 +40,8 @@ public class Recruitment {
       String salary, String workDuration, String workDays, String workType, String workHours,
       String requestedCareer,
       String majorBusiness, String eligibilityCriteria, String preferredConditions,
-      String employerName, String companyName, Company company,RecruitmentContent recruitmentContent) {
+      String employerName, String companyName, Company company,
+      RecruitmentContent recruitmentContent) {
     this.koreanTitle = koreanTitle;
     this.vietnameseTitle = vietnameseTitle;
     this.companySize = companySize;

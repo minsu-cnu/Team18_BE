@@ -62,7 +62,8 @@ public class UserInformationService {
   public void fillInVisa(VisaRequest visaRequest, User user) {
     LocalDate visaGenerateDate = LocalDate.parse(visaRequest.visaGenerateDate());
     LocalDate visaExpiryDate = visaGenerateDate.plusYears(10);
-    ForeignerInformation newForeignerInformation = new ForeignerInformation(user.getId(), visaRequest.foreignerIdNumber(),
+    ForeignerInformation newForeignerInformation = new ForeignerInformation(user.getId(),
+        visaRequest.foreignerIdNumber(),
         visaGenerateDate, visaExpiryDate, user);
     foreignerInformationRepository.save(newForeignerInformation);
   }
@@ -80,7 +81,7 @@ public class UserInformationService {
     byte[] imageFile = fileUtil.safelyGetBytes(imageUrl)
         .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
     String storedFileName = gcsUploader.upload(imageFile, "Sign",
-            user.getId().toString()+ RandomStringUtils.random(5) + imageUrl.getOriginalFilename())
+            user.getId().toString() + RandomStringUtils.random(5) + imageUrl.getOriginalFilename())
         .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
     Sign newSign = new Sign(storedFileName, user);
     signRepository.save(newSign);
