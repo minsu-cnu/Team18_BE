@@ -1,4 +1,4 @@
-package team18.team18_be.config;
+package team18.team18_be.config.GCS;
 
 import jakarta.servlet.MultipartConfigElement;
 import org.springframework.beans.factory.annotation.Value;
