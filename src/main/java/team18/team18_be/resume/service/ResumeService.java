@@ -21,15 +21,11 @@ public class ResumeService {
     this.authRepository = authRepository;
   }
 
-  public void saveResume(ResumeRequest resumeRequest, Long employeeId) {
-    User user = authRepository.findById(employeeId)
-        .orElseThrow(() -> new NoSuchElementException("해당하는 사용자가 존재하지 않습니다."));
+  public void saveResume(ResumeRequest resumeRequest, User user) {
     resumeRepository.save(mapResumeRequestToResume(resumeRequest, user));
   }
 
-  public ResumeResponse findResumeByEmployeeId(Long employeeId) {
-    User user = authRepository.findById(employeeId)
-        .orElseThrow(() -> new NoSuchElementException("해당하는 사용자가 존재하지 않습니다."));
+  public ResumeResponse findResumeByEmployeeId(User user) {
     return mapResumeToResumeResponse(resumeRepository.findByUser(user));
   }
 

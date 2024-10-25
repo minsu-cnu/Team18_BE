@@ -68,8 +68,19 @@ public class RecruitmentService {
     return mapRecruitmentAndRecruitmentContentToRecruitmentResponse(recruitment);
   }
 
-  public RecruitmentResponse getRecruitmentResponseByCompanyId(Long recruitmentId) {
-    return null;
+  public List<RecruitmentSummationResponse> getRecruitmentResponseByCompanyId(Long companyId) {
+    List<Recruitment> recruitments = recruitmentRepository.findByCompany(companyRepository.findById(companyId));
+    return recruitments.stream()
+        .map(recruitment -> new RecruitmentSummationResponse(
+            recruitment.getRecruitmentId(),
+            "image ",
+            recruitment.getKoreanTitle(),
+            recruitment.getVietnameseTitle(),
+            recruitment.getCompanyName(),
+            recruitment.getSalary(),
+            recruitment.getArea()
+        ))
+        .collect(Collectors.toList());
   }
 
   private Recruitment mapRecruitmentRequestToRecruitment(String koreanTitle, String vietnameseTitle,
@@ -82,7 +93,7 @@ public class RecruitmentService {
         recruitmentRequest.preferredConditions(), recruitmentRequest.employerName(),
         recruitmentRequest.companyName(),
         companyRepository.findById(recruitmentRequest.companyId())
-            .orElseThrow(() -> new NoSuchElementException("해당하는 사용자가 존재하지 않습니다.")),
+            .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),
         recruitmentContent);
   }
 
