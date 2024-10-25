@@ -52,4 +52,25 @@ public class GlobalExceptionHandler {
     ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
     return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(value = JwtExpiredException.class)
+  public ResponseEntity<ExceptionResponse> handleJwtExpiredException(
+      JwtExpiredException e) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(value = FileDownloadException.class)
+  public ResponseEntity<ExceptionResponse> handleFileDownloadException(
+      FileDownloadException e) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_GATEWAY);
+  }
+
+  @ExceptionHandler(value = NotFoundException.class)
+  public ResponseEntity<ExceptionResponse> handleFileDownloadException(
+      NotFoundException e) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+  }
 }
