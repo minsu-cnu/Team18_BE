@@ -23,6 +23,7 @@ public class Sign {
 
   @OneToOne
   @JoinColumn(name = "user_id")
+  @NotNull
   private User user;
 
   public Sign() {
