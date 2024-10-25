@@ -1,12 +1,19 @@
 package team18.team18_be.recruitment.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import team18.team18_be.userInformation.entity.Company;
 
 @Entity
 public class Recruitment {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long recruitmentId;
   private String koreanTitle;
   private String vietnameseTitle;
@@ -23,13 +30,18 @@ public class Recruitment {
   private String preferredConditions;
   private String employerName;
   private String companyName;
-  private Long companyId;
+  @ManyToOne
+  @JoinColumn(name = "companyId")
+  private Company company;
+  @OneToOne
+  private RecruitmentContent recruitmentContent;
 
   public Recruitment(String koreanTitle, String vietnameseTitle, String companySize, String area,
       String salary, String workDuration, String workDays, String workType, String workHours,
       String requestedCareer,
       String majorBusiness, String eligibilityCriteria, String preferredConditions,
-      String employerName, String companyName, Long companyId) {
+      String employerName, String companyName, Company company,
+      RecruitmentContent recruitmentContent) {
     this.koreanTitle = koreanTitle;
     this.vietnameseTitle = vietnameseTitle;
     this.companySize = companySize;
@@ -45,8 +57,10 @@ public class Recruitment {
     this.preferredConditions = preferredConditions;
     this.employerName = employerName;
     this.companyName = companyName;
-    this.companyId = companyId;
+    this.company = company;
+    this.recruitmentContent = recruitmentContent;
   }
+
 
   public Recruitment() {
 
@@ -114,6 +128,14 @@ public class Recruitment {
 
   public String getCompanyName() {
     return companyName;
+  }
+
+  public Company getCompany() {
+    return company;
+  }
+
+  public RecruitmentContent getRecruitmentContent() {
+    return recruitmentContent;
   }
 
 }

@@ -4,11 +4,14 @@ import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import team18.team18_be.apply.dto.response.ApplyResponse;
+import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
+import team18.team18_be.apply.dto.response.MandatoryResponse;
+import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
 import team18.team18_be.apply.service.ApplyService;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
@@ -24,17 +27,32 @@ public class ApplyController {
     this.applyService = applyService;
   }
 
-  @PostMapping
+  @PostMapping("/{recruitmentId}")
   public ResponseEntity<Void> createApplicationForm(
-      @RequestBody ApplicationFormRequest applicationFormRequest, @LoginUser User user) {
-    Long applicationId = applyService.createApplicationForm(applicationFormRequest);
+      @RequestBody ApplicationFormRequest applicationFormRequest, @PathVariable Long recruitmentId,
+      @LoginUser User user) {
+    Long applicationId = applyService.createApplicationForm(applicationFormRequest, recruitmentId,
+        user);
     URI location = URI.create("/api/application/" + applicationId);
 
     return ResponseEntity.created(location).build();
   }
 
-  @GetMapping
-  public ResponseEntity<List<ApplyResponse>> SearchApplicant(@LoginUser User user) {
-    return ResponseEntity.ok(applyService.searchApplicacnt());
+  @GetMapping("/{recruitmentId}")
+  public ResponseEntity<List<ApplierPerRecruitmentResponse>> searchApplicant(
+      @PathVariable Long recruitmentId,
+      @LoginUser User user) {
+    return ResponseEntity.ok(applyService.searchApplicant(recruitmentId, user));
+  }
+
+  @GetMapping("/all")
+  public ResponseEntity<List<RecruitmentsOfApplierResponse>> searchMyAppliedRecruitments(
+      @LoginUser User user) {
+    return ResponseEntity.ok(applyService.SearchMyAppliedRecruitments(user));
+  }
+
+  @GetMapping()
+  public ResponseEntity<MandatoryResponse> checkMandatory(@LoginUser User user) {
+    return ResponseEntity.ok(applyService.checkMandatory(user));
   }
 }
