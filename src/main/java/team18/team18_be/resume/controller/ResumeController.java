@@ -33,7 +33,7 @@ public class ResumeController {
       @RequestBody ResumeRequest resumeRequest,
       @LoginUser User user
   ) {
-    resumeService.saveResume(resumeRequest, user.getId());
+    resumeService.saveResume(resumeRequest, user);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -42,7 +42,7 @@ public class ResumeController {
   public ResponseEntity<ResumeResponse> getResume(
       @LoginUser User user
   ) {
-    return ResponseEntity.ok().body(resumeService.findResumeByEmployeeId(user.getId()));
+    return ResponseEntity.ok().body(resumeService.findResumeByEmployeeId(user));
   }
 
   @ApiOperation(value = "이력서 id로 이력서 조회 메서드")
