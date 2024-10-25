@@ -9,9 +9,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import team18.team18_be.apply.entity.ApplicationForm;
 import team18.team18_be.apply.entity.Apply;
-import team18.team18_be.auth.entity.User;
 
 @Entity(name = "contracts")
 @Builder

@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import team18.team18_be.auth.entity.User;
 
 @Table
@@ -17,17 +17,20 @@ public class Company {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @NotBlank
+  @NotNull
   private String name;
-  @NotBlank
+  @NotNull
   private String industryOccupation;
+  @NotNull
   private String brand;
-  @NotBlank
+  @NotNull
   private Long revenuePerYear;
+  @NotNull
   private String logoImage;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @NotNull
   private User user;
 
   public Company() {
@@ -41,6 +44,10 @@ public class Company {
     this.revenuePerYear = revenuePerYear;
     this.logoImage = logoImage;
     this.user = user;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getName() {
