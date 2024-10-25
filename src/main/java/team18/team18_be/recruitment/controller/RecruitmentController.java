@@ -55,13 +55,13 @@ public class RecruitmentController {
         .body(recruitmentService.getRecruitmentResponseByRecruitmentId(postId));
   }
 
-  @ApiOperation(value = "고용주 별 구인글 조회 메서드")
-  @GetMapping("/user")
-  public ResponseEntity<List<RecruitmentResponse>> getAllEmployerName(
-      @LoginUser User user
+  @ApiOperation(value = "회사 별 구인글 조회 메서드")
+  @GetMapping("/company/{companyId}")
+  public ResponseEntity<List<RecruitmentSummationResponse>> getAllEmployerName(
+      @PathVariable Long companyId
   ) {
-    //return ResponseEntity.ok().body(recruitmentService.getRecruitmentResponseByRecruitmentId(user.getId()));
-    return null;
+    return ResponseEntity.ok()
+        .body(recruitmentService.getRecruitmentResponseByCompanyId(companyId));
   }
 
 }
