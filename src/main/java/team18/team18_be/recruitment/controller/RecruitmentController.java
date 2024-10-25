@@ -60,7 +60,8 @@ public class RecruitmentController {
   public ResponseEntity<List<RecruitmentSummationResponse>> getAllEmployerName(
       @PathVariable Long companyId
   ) {
-    return ResponseEntity.ok().body(recruitmentService.getRecruitmentResponseByCompanyId(companyId));
+    return ResponseEntity.ok()
+        .body(recruitmentService.getRecruitmentResponseByCompanyId(companyId));
   }
 
 }
