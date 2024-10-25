@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -20,19 +21,20 @@ public class ApplicationForm {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Size(max = 10, message = "최대 10글자까지 입력 가능합니다.")
-  @NotBlank
+  @NotNull
   private String name;
-  @NotBlank
+  @NotNull
   private String address;
   @Pattern(regexp = "^010\\d{8}$", message = "-없이 입력해주세요. ex) 01012345678")
-  @NotBlank
+  @NotNull
   private String phoneNumber;
   @Size(max = 500, message = "500글자 내로 입력해주세요.")
-  @NotBlank
+  @NotNull
   private String motivation;
 
   @OneToOne
   @JoinColumn(name = "apply_id")
+  @NotNull
   private Apply apply;
 
   public ApplicationForm() {

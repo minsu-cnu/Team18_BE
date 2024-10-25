@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.recruitment.entity.Recruitment;
 
@@ -19,14 +20,16 @@ public class Apply {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank
+  @NotNull
   private String status;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @NotNull
   private User user;
   @ManyToOne
   @JoinColumn(name = "recruitment_id")
+  @NotNull
   private Recruitment recruitment;
 
   public Apply() {
