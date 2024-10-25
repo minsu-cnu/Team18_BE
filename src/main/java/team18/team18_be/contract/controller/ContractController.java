@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.contract.dto.request.ContractRequest;
-import team18.team18_be.contract.dto.response.ContractResponse;
 import team18.team18_be.contract.service.ContractFileService;
 import team18.team18_be.contract.service.ContractPdfService;
 import team18.team18_be.contract.service.ContractService;
