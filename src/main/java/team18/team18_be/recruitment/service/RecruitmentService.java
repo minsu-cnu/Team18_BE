@@ -54,7 +54,7 @@ public class RecruitmentService {
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
-            "image ",
+            recruitment.getCompany().getLogoImage(),
             recruitment.getKoreanTitle(),
             recruitment.getVietnameseTitle(),
             recruitment.getCompanyName(),
@@ -76,7 +76,7 @@ public class RecruitmentService {
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
-            "image ",
+            recruitment.getCompany().getLogoImage(),
             recruitment.getKoreanTitle(),
             recruitment.getVietnameseTitle(),
             recruitment.getCompanyName(),
