@@ -3,7 +3,9 @@ package team18.team18_be.apply.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
 import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
@@ -46,10 +48,10 @@ public class ApplyService {
 
   public Long createApplicationForm(ApplicationFormRequest applicationFormRequest,
       Long recruitmentId, User user) {
-    String status = "지원 중";
+    ApplyStatus status = ApplyStatus.REVIEWING_APPLICATION;
     Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
         .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
-    Apply apply = new Apply(status, user, recruitment);
+    Apply apply = new Apply(status.getKoreanName(), user, recruitment);
     Apply savedApply = applyRepository.save(apply);
 
     return savedApply.getId();
@@ -59,17 +61,21 @@ public class ApplyService {
   public List<ApplierPerRecruitmentResponse> searchApplicant(Long recruitmentId, User user) {
     Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
         .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
+
     List<Apply> applyList = applyRepository.findByRecruitment(recruitment);
-    List<ApplierPerRecruitmentResponse> applyResponseList = new ArrayList<>();
-    for (Apply apply : applyList) {
-      User applicantUser = apply.getUser(); //구인글에 지원한 지원자
-      Resume resume = resumeRepository.findByUser(applicantUser); //그 지원자의 이력서 가져오기
-      ApplierPerRecruitmentResponse applierPerRecruitmentResponse = new ApplierPerRecruitmentResponse(
-          applicantUser.getId(), applicantUser.getName(), resume.getResumeId(), apply.getId(),
-          "베트남", resume.getKorean());
-      applyResponseList.add(applierPerRecruitmentResponse);
-    }
-    return applyResponseList;
+
+    return applyRepository.findByRecruitment(recruitment).stream()
+        .map(this::createApplierPerRecruitmentResponse)  // 각 Apply 객체를 변환
+        .collect(Collectors.toList());
+  }
+
+  private ApplierPerRecruitmentResponse createApplierPerRecruitmentResponse(Apply apply) {
+    User applicantUser = apply.getUser();
+    Resume resume = resumeRepository.findByUser(applicantUser); //그 지원자의 이력서 가져오기
+    return new ApplierPerRecruitmentResponse(
+        applicantUser.getId(), applicantUser.getName(), resume.getResumeId(), apply.getId(),
+        "베트남", resume.getKorean()
+    );
   }
 
   public List<RecruitmentsOfApplierResponse> searchMyAppliedRecruitments(User user) {
