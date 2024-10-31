@@ -31,14 +31,12 @@ public class PdfService {
   public byte[] createPdf(ContractRequest request, User user, String pdfName)
       throws DocumentException, IOException {
 
-    // 원본 파일 읽기
     ClassPathResource resource = new ClassPathResource(pdfName);
-    // 메모리 안에 PDF 파일을 담기 위한 스트림
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
     // PDF 준비
-    PdfContentByte contentByte = preparePdfContent(resource.getContentAsByteArray(),
-        byteArrayOutputStream);
+    PdfStamper stamper = preparePdfStamper(resource.getContentAsByteArray(), byteArrayOutputStream);
+    PdfContentByte contentByte = stamper.getOverContent(1);
 
     // 폰트 준비
     BaseFont font = prepareFont();
@@ -47,9 +45,7 @@ public class PdfService {
     // 글자 추가
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER, Integer.toString(request.salary()), 350,
         630, 0);
-    contentByte.showTextAligned(Paragraph.ALIGN_CENTER,
-        request.workingHours(), 350, 550,
-        0);
+    contentByte.showTextAligned(Paragraph.ALIGN_CENTER, request.workingHours(), 350, 550, 0);
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER, request.dayOff(), 350, 475, 0);
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER, request.annualPaidLeave(), 350, 400, 0);
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER,
@@ -61,9 +57,10 @@ public class PdfService {
 
     // 고용주 서명 받기
     byte[] imageBytes = fileService.getSignImage(user);
-
-    // 서명 이미지 추가
     addImageToPdf(contentByte, imageBytes, 50, 50, 465, 103);
+
+    // PdfStamper 닫기
+    stamper.close();
 
     return byteArrayOutputStream.toByteArray();
   }
@@ -71,42 +68,34 @@ public class PdfService {
   public byte[] fillInEmployeeSign(byte[] pdfData, User user)
       throws IOException, DocumentException {
 
-    // 메모리 안에 PDF 파일을 담기 위한 스트림
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-    // PDF 준비
-    PdfContentByte contentByte = preparePdfContent(pdfData, byteArrayOutputStream);
+    PdfStamper stamper = preparePdfStamper(pdfData, byteArrayOutputStream);
+    PdfContentByte contentByte = stamper.getUnderContent(1);
 
     // 폰트 준비
     BaseFont font = prepareFont();
     contentByte.setFontAndSize(font, 10);
 
     // 서명 추가
-    contentByte.showTextAligned(Paragraph.ALIGN_CENTER, user.getName(), 457, 113, 0);
+    contentByte.showTextAligned(Paragraph.ALIGN_CENTER, user.getName(), 457, 98, 0);
 
     // 근로자 서명 받기
     byte[] imageBytes = fileService.getSignImage(user);
-
-    // 근로자 서명 이미지 추가
     addImageToPdf(contentByte, imageBytes, 50, 50, 465, 83);
+
+    // PdfStamper 닫기
+    stamper.close();
 
     return byteArrayOutputStream.toByteArray();
   }
 
-  private PdfContentByte preparePdfContent(byte[] pdfData,
-      ByteArrayOutputStream byteArrayOutputStream) throws IOException, DocumentException {
-
+  private PdfStamper preparePdfStamper(byte[] pdfData, ByteArrayOutputStream byteArrayOutputStream)
+      throws IOException, DocumentException {
     PdfReader reader = new PdfReader(pdfData);
-
-    // 메모리 안에 PDF 파일 생성
-    PdfStamper stamper = new PdfStamper(reader, byteArrayOutputStream);
-
-    // pdf 수정할 페이지 지정
-    return stamper.getOverContent(1);
+    return new PdfStamper(reader, byteArrayOutputStream);
   }
 
   private BaseFont prepareFont() throws DocumentException, IOException {
-
     // 폰트 지정
     return BaseFont.createFont("gothic.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
   }
@@ -114,11 +103,7 @@ public class PdfService {
   public byte[] convertPdfToImage(byte[] pdfData) throws IOException {
     try (PDDocument document = PDDocument.load(pdfData)) {
       PDFRenderer pdfRenderer = new PDFRenderer(document);
-
-      // 첫 번째 페이지를 이미지로 변환
       BufferedImage image = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-
-      // byte[] 로 변환
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       ImageIO.write(image, "png", byteArrayOutputStream);
       return byteArrayOutputStream.toByteArray();
