@@ -48,6 +48,7 @@ public class ContractService {
     createContract(request, pdfUrl, pdfUrlV);
   }
 
+  @Transactional
   public void handleEmployeeSignature(ContractRequest request, User user)
       throws DocumentException, IOException {
 
@@ -80,14 +81,16 @@ public class ContractService {
     contractRepository.save(
         Contract.builder()
             .salary(request.salary())
+            .workingPlace(request.workingPlace())
             .workingHours(request.workingHours())
+            .responsibilities(request.responsibilities())
+            .annualPaidLeave(request.annualPaidLeave())
+            .dayOff(request.dayOff())
+            .rule(request.rule())
             .imageFileUrl(null)
             .pdfFileUrl(pdfUrl)
             .imageFileUrlV(null)
             .pdfFileUrlV(pdfUrlV)
-            .annualPaidLeave(request.annualPaidLeave())
-            .dayOff(request.dayOff())
-            .rule(request.rule())
             .apply(apply).build()
     );
   }

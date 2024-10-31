@@ -79,7 +79,6 @@ public class Contract {
     return rule;
   }
 
-
   public void updatePdfFileUrl(String pdfFileUrl) {
     this.pdfFileUrl = pdfFileUrl;
   }
