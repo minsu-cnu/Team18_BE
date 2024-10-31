@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.GCS.GcsUploader;
 import team18.team18_be.contract.dto.request.ContractRequest;
+import team18.team18_be.contract.dto.response.ContractResponse;
 import team18.team18_be.contract.entity.Contract;
 import team18.team18_be.contract.repository.ContractRepository;
 import team18.team18_be.exception.FileDownloadException;
@@ -63,17 +64,17 @@ public class ContractFileService {
     }
   }
 
-  public String getPdfUrl(Long applyId) {
+  public ContractResponse getPdfUrl(Long applyId) {
     Contract contract = contractRepository.findByApplyId(applyId)
         .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
 
-    return contract.getPdfFileUrl();
+    return new ContractResponse(contract.getPdfFileUrl());
   }
 
-  public String getImageUrl(Long applyId) {
+  public ContractResponse getImageUrl(Long applyId) {
     Contract contract = contractRepository.findByApplyId(applyId)
         .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
 
-    return contract.getImageFileUrl();
+    return new ContractResponse(contract.getImageFileUrl());
   }
 }
