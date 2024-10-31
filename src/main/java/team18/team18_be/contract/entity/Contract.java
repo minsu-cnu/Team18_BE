@@ -28,6 +28,8 @@ public class Contract {
   private String responsibilities;
   private String imageFileUrl;
   private String pdfFileUrl;
+  private String imageFileUrlV;
+  private String pdfFileUrlV;
   private String rule;
   @ManyToOne
   @JoinColumn(name = "applyId")
@@ -41,11 +43,27 @@ public class Contract {
     return this.imageFileUrl;
   }
 
+  public String getImageFileUrlV() {
+    return imageFileUrlV;
+  }
+
+  public String getPdfFileUrlV() {
+    return pdfFileUrlV;
+  }
+
   public void updatePdfFileUrl(String pdfFileUrl) {
     this.pdfFileUrl = pdfFileUrl;
   }
 
   public void updateImageFileUrl(String imageFileUrl) {
     this.imageFileUrl = imageFileUrl;
+  }
+
+  public void updatePdfFileUrlV(String pdfFileUrl) {
+    this.pdfFileUrlV = pdfFileUrl;
+  }
+
+  public void updateImageFileUrlV(String imageFileUrl) {
+    this.imageFileUrlV = imageFileUrl;
   }
 }
