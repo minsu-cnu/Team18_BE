@@ -20,11 +20,8 @@ import team18.team18_be.exception.JwtInvalidException;
 
 public class JwtValidationInterceptor implements HandlerInterceptor {
 
-  public static final String NOT_FOUND_ACCESS_TOKEN_ERROR_MESSAGE = "요청에 액세스 토큰이 존재하지 않습니다.";
   public static final String BEARER = "Bearer ";
-  public static final String ACCESS_TOKEN_EXPIRED_ERROR_MESSAGE = "액세스 토큰이 만료되었습니다.";
   public static final String USER_ID = "userId";
-  public static final String NOT_FOUND_USER_ERROR_MESSAGE = "회원 정보가 존재하지 않습니다.";
   private final Set<String> allowedMethods;
   private final AuthRepository authRepository;
   @Value("${jwt.header}")
@@ -58,7 +55,8 @@ public class JwtValidationInterceptor implements HandlerInterceptor {
     String accessToken = request.getHeader(AUTHORIZATION);
 
     if (accessToken == null) {
-      throw new JwtInvalidException(NOT_FOUND_ACCESS_TOKEN_ERROR_MESSAGE);
+      throw new JwtInvalidException(
+          ErrorMessage.NOT_FOUND_ACCESS_TOKEN_ERROR_MESSAGE.getErrorMessage());
     }
 
     accessToken = accessToken.replaceFirst(BEARER, "");
@@ -77,7 +75,8 @@ public class JwtValidationInterceptor implements HandlerInterceptor {
           .build()
           .parseSignedClaims(accessToken);
     } catch (ExpiredJwtException e) {
-      throw new JwtExpiredException(ACCESS_TOKEN_EXPIRED_ERROR_MESSAGE);
+      throw new JwtExpiredException(
+          ErrorMessage.ACCESS_TOKEN_EXPIRED_ERROR_MESSAGE.getErrorMessage());
     }
 
     Long userId = claims.getPayload().get(USER_ID, Long.class);

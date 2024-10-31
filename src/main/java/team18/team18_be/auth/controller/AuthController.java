@@ -3,6 +3,7 @@ package team18.team18_be.auth.controller;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import team18.team18_be.auth.dto.response.UserTypeResponse;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.auth.service.AuthService;
 import team18.team18_be.config.resolver.LoginUser;
+import team18.team18_be.exception.ExceptionResponse;
 
 @Tag(name = "인증/인가", description = "인증/인가 관련 API")
 @RestController
@@ -37,7 +39,13 @@ public class AuthController {
     this.authService = authService;
   }
 
-  @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserTypeResponse.class)))
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserTypeResponse.class))),
+      @ApiResponse(responseCode = "401", description = "구글 토큰 발급 관련 에러", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))),
+      @ApiResponse(responseCode = "401", description = "구글 유저 정보 조회 관련 에러", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))),
+      @ApiResponse(responseCode = "404", description = "회원 정보 없음", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))),
+      @ApiResponse(responseCode = "500", description = "서버 내부 에러", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
+  })
   @PostMapping("/oauth")
   public ResponseEntity<UserTypeResponse> login(@RequestBody CodeRequest codeRequest) {
     OAuthJwtResponse oAuthJwtResponse = authService.getOAuthToken(codeRequest,
@@ -54,11 +62,11 @@ public class AuthController {
     return new ResponseEntity<>(userTypeResponse, headers, HttpStatus.OK);
   }
 
-  @ApiResponse(responseCode = "200", description = "성공")
+  @ApiResponse(responseCode = "204", description = "유저 타입 등록 성공")
   @PostMapping("/register")
   public ResponseEntity<Void> registerUserType(@Valid @RequestBody UserTypeRequest userTypeRequest,
       @LoginUser User user) {
     authService.registerUserType(userTypeRequest, user);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
