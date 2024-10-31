@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
+import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
 import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.entity.RecruitmentContent;
 import team18.team18_be.userInformation.entity.Company;
@@ -17,7 +18,9 @@ import team18.team18_be.userInformation.repository.CompanyRepository;
 public interface RecruitmentMapper {
   RecruitmentMapper INSTANCE = Mappers.getMapper(RecruitmentMapper.class);
 
-  Recruitment toRecruitment(String koreanTitle, String vietnameseTitle,
-      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent, Company company);
 
+  Recruitment toRecruitment(String koreanTitle, String vietnameseTitle,
+      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent, Company company,Boolean hiring);
+
+  RecruitmentResponse toRecruitmentResponse(Recruitment recruitment,RecruitmentContent recruitmentContent);
 }

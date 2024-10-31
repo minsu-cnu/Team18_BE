@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import team18.team18_be.config.infrastructure.OpenAiService;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
+import team18.team18_be.recruitment.dto.response.RecruitmentResponseForCompany;
 import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
 import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.entity.RecruitmentContent;
@@ -48,7 +49,7 @@ public class RecruitmentService {
     recruitmentRepository.save(
         recruitmentMapper.toRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
             recruitmentContent,companyRepository.findById(recruitmentRequest.companyId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다."))
+                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),true
             ));
 
   }
@@ -71,49 +72,31 @@ public class RecruitmentService {
   public RecruitmentResponse getRecruitmentResponseByRecruitmentId(Long userId) {
     Recruitment recruitment = recruitmentRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
-    return mapRecruitmentAndRecruitmentContentToRecruitmentResponse(recruitment);
+    return recruitmentMapper.toRecruitmentResponse(recruitment,recruitment.getRecruitmentContent());
   }
 
-  public List<RecruitmentSummationResponse> getRecruitmentResponseByCompanyId(Long companyId) {
+  public List<RecruitmentResponseForCompany> getRecruitmentResponseByCompanyId(Long companyId) {
     List<Recruitment> recruitments = recruitmentRepository.findByCompany(
         companyRepository.findById(companyId));
     return recruitments.stream()
-        .map(recruitment -> new RecruitmentSummationResponse(
+        .map(recruitment -> new RecruitmentResponseForCompany(
             recruitment.getRecruitmentId(),
             recruitment.getCompany().getLogoImage(),
             recruitment.getKoreanTitle(),
             recruitment.getVietnameseTitle(),
             recruitment.getCompanyName(),
             recruitment.getSalary(),
-            recruitment.getArea()
+            recruitment.getArea(),
+            recruitment.getHiring()
         ))
         .collect(Collectors.toList());
   }
 
-  private Recruitment mapRecruitmentRequestToRecruitment(String koreanTitle, String vietnameseTitle,
-      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent) {
-    return new Recruitment(koreanTitle, vietnameseTitle, recruitmentRequest.companySize(),
-        recruitmentRequest.area(), recruitmentRequest.salary(), recruitmentRequest.workDuration(),
-        recruitmentRequest.workDays(), recruitmentRequest.workType(),
-        recruitmentRequest.workHours(), recruitmentRequest.requestedCareer(),
-        recruitmentRequest.majorBusiness(), recruitmentRequest.eligibilityCriteria(),
-        recruitmentRequest.preferredConditions(), recruitmentRequest.employerName(),
-        recruitmentRequest.companyName(),
-        companyRepository.findById(recruitmentRequest.companyId())
-            .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),
-        recruitmentContent);
-  }
-
-  private RecruitmentResponse mapRecruitmentAndRecruitmentContentToRecruitmentResponse(
-      Recruitment recruitment) {
-    return new RecruitmentResponse(recruitment.getKoreanTitle(), recruitment.getVietnameseTitle(),
-        recruitment.getCompanySize(), recruitment.getArea(), recruitment.getSalary(),
-        recruitment.getWorkDuration(), recruitment.getWorkDays(), recruitment.getWorkType(),
-        recruitment.getWorkHours(), recruitment.getRequestedCareer(),
-        recruitment.getMajorBusiness(), recruitment.getEligibilityCriteria(),
-        recruitment.getPreferredConditions(), recruitment.getEmployerName(),
-        recruitment.getRecruitmentContent().getKoreanDetailedDescription(),
-        recruitment.getRecruitmentContent().getVietnameseDetailedDescription());
+  public void setRecruitmentHiringFalse(Long recruitmentId){
+    Recruitment recruitment =  recruitmentRepository.findById(recruitmentId)
+        .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다."));
+    recruitment.setHiring(false);
+    recruitmentRepository.save(recruitment);
   }
 
 }

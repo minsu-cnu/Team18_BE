@@ -16,6 +16,7 @@ import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
+import team18.team18_be.recruitment.dto.response.RecruitmentResponseForCompany;
 import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
 import team18.team18_be.recruitment.service.RecruitmentService;
 
@@ -57,11 +58,20 @@ public class RecruitmentController {
 
   @ApiOperation(value = "회사 별 구인글 조회 메서드")
   @GetMapping("/company/{companyId}")
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllEmployerName(
+  public ResponseEntity<List<RecruitmentResponseForCompany>> getAllRecruitmentByCompanyId(
       @PathVariable Long companyId
   ) {
     return ResponseEntity.ok()
         .body(recruitmentService.getRecruitmentResponseByCompanyId(companyId));
+  }
+
+  @ApiOperation(value = "구인글 마감 메서드")
+  @GetMapping("/hiringClose/{recruitmentId}")
+  public ResponseEntity<Void> setRecruitmentHiringFalse(
+      @PathVariable Long recruitmentId
+  ) {
+    recruitmentService.setRecruitmentHiringFalse(recruitmentId);
+    return ResponseEntity.ok().build();
   }
 
 }
