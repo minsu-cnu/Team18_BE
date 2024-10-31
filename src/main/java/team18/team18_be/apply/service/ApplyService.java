@@ -72,7 +72,7 @@ public class ApplyService {
     return applyResponseList;
   }
 
-  public List<RecruitmentsOfApplierResponse> SearchMyAppliedRecruitments(User user) {
+  public List<RecruitmentsOfApplierResponse> searchMyAppliedRecruitments(User user) {
     List<RecruitmentsOfApplierResponse> recruitmentsOfApplierResponseList = new ArrayList<>();
     List<Apply> applys = applyRepository.findByUser(user); //지원자의 지원 가져오기
     for (Apply apply : applys) {
