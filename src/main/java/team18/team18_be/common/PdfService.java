@@ -1,4 +1,4 @@
-package team18.team18_be.contract.service;
+package team18.team18_be.common;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -20,12 +20,12 @@ import team18.team18_be.auth.entity.User;
 import team18.team18_be.contract.dto.request.ContractRequest;
 
 @Service
-public class ContractPdfService {
+public class PdfService {
 
-  private final ContractFileService contractFileService;
+  private final FileService fileService;
 
-  public ContractPdfService(ContractFileService contractFileService) {
-    this.contractFileService = contractFileService;
+  public PdfService(FileService fileService) {
+    this.fileService = fileService;
   }
 
   public byte[] createPdf(ContractRequest request, User user)
@@ -60,7 +60,7 @@ public class ContractPdfService {
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER, user.getName(), 457, 123, 0);
 
     // 고용주 서명 받기
-    byte[] imageBytes = contractFileService.getSignImage(user);
+    byte[] imageBytes = fileService.getSignImage(user);
 
     // 서명 이미지 추가
     addImageToPdf(contentByte, imageBytes, 50, 50, 465, 103);
@@ -85,7 +85,7 @@ public class ContractPdfService {
     contentByte.showTextAligned(Paragraph.ALIGN_CENTER, user.getName(), 457, 113, 0);
 
     // 근로자 서명 받기
-    byte[] imageBytes = contractFileService.getSignImage(user);
+    byte[] imageBytes = fileService.getSignImage(user);
 
     // 근로자 서명 이미지 추가
     addImageToPdf(contentByte, imageBytes, 50, 50, 465, 83);
