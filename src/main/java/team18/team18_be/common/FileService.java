@@ -60,4 +60,18 @@ public class FileService {
       throw new FileDownloadException("파일 다운로드 실패");
     }
   }
+
+  public byte[] getPdfV(ContractRequest request) {
+    Contract contract = contractRepository.findByApplyId(request.applyId())
+        .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
+
+    ResponseEntity<byte[]> response = restTemplate.getForEntity(contract.getPdfFileUrlV(),
+        byte[].class);
+
+    if (response.getStatusCode().is2xxSuccessful()) {
+      return response.getBody();
+    } else {
+      throw new FileDownloadException("파일 다운로드 실패");
+    }
+  }
 }
