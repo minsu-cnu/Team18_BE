@@ -7,9 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import team18.team18_be.userInformation.entity.Company;
 
 @Entity
+@Getter
+@Setter
 public class Recruitment {
 
   @Id
@@ -64,78 +69,6 @@ public class Recruitment {
 
   public Recruitment() {
 
-  }
-
-  public Long getRecruitmentId() {
-    return recruitmentId;
-  }
-
-  public String getKoreanTitle() {
-    return koreanTitle;
-  }
-
-  public String getVietnameseTitle() {
-    return vietnameseTitle;
-  }
-
-  public String getCompanySize() {
-    return companySize;
-  }
-
-  public String getArea() {
-    return area;
-  }
-
-  public String getSalary() {
-    return salary;
-  }
-
-  public String getWorkDuration() {
-    return workDuration;
-  }
-
-  public String getWorkDays() {
-    return workDays;
-  }
-
-  public String getWorkType() {
-    return workType;
-  }
-
-  public String getWorkHours() {
-    return workHours;
-  }
-
-  public String getRequestedCareer() {
-    return requestedCareer;
-  }
-
-  public String getMajorBusiness() {
-    return majorBusiness;
-  }
-
-  public String getEligibilityCriteria() {
-    return eligibilityCriteria;
-  }
-
-  public String getPreferredConditions() {
-    return preferredConditions;
-  }
-
-  public String getEmployerName() {
-    return employerName;
-  }
-
-  public String getCompanyName() {
-    return companyName;
-  }
-
-  public Company getCompany() {
-    return company;
-  }
-
-  public RecruitmentContent getRecruitmentContent() {
-    return recruitmentContent;
   }
 
 }
