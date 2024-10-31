@@ -10,6 +10,7 @@ import team18.team18_be.auth.entity.User;
 import team18.team18_be.common.FileService;
 import team18.team18_be.common.PdfService;
 import team18.team18_be.contract.dto.request.ContractRequest;
+import team18.team18_be.contract.dto.response.ContractFileResponse;
 import team18.team18_be.contract.dto.response.ContractResponse;
 import team18.team18_be.contract.entity.Contract;
 import team18.team18_be.contract.repository.ContractRepository;
@@ -97,16 +98,30 @@ public class ContractService {
     contract.updateImageFileUrlV(imageUrlV);
   }
 
-  public ContractResponse getContractPdfUrl(Long applyId) {
+  public ContractFileResponse getContractPdfUrl(Long applyId) {
     Contract contract = contractRepository.findByApplyId(applyId)
         .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
-    return new ContractResponse(contract.getPdfFileUrl(), contract.getPdfFileUrlV());
+    return new ContractFileResponse(contract.getPdfFileUrl(), contract.getPdfFileUrlV());
   }
 
-  public ContractResponse getContractImageUrl(Long applyId) {
+  public ContractFileResponse getContractImageUrl(Long applyId) {
     Contract contract = contractRepository.findByApplyId(applyId)
         .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
-    return new ContractResponse(contract.getImageFileUrl(), contract.getImageFileUrlV());
+    return new ContractFileResponse(contract.getImageFileUrl(), contract.getImageFileUrlV());
+  }
+
+  public ContractResponse getContract(Long applyId) {
+    Contract contract = contractRepository.findByApplyId(applyId)
+        .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
+    return new ContractResponse(
+        contract.getSalary(),
+        contract.getWorkingHours(),
+        contract.getDayOff(),
+        contract.getAnnualPaidLeave(),
+        contract.getWorkingPlace(),
+        contract.getResponsibilities(),
+        contract.getRule()
+    );
   }
 
 }
