@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team18.team18_be.auth.entity.User;
+import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.config.GCS.FileUtil;
 import team18.team18_be.config.GCS.GcsUploader;
 import team18.team18_be.userInformation.dto.request.CompanyRequest;
@@ -26,16 +27,19 @@ public class UserInformationService {
   private final ForeignerInformationRepository foreignerInformationRepository;
   private final CompanyRepository companyRepository;
   private final SignRepository signRepository;
+  private final AuthRepository authRepository;
   private final GcsUploader gcsUploader;
   private final FileUtil fileUtil;
 
 
   public UserInformationService(ForeignerInformationRepository foreignerInformationRepository,
-      CompanyRepository companyRepository, SignRepository signRepository, GcsUploader gcsUploader,
+      CompanyRepository companyRepository, SignRepository signRepository,
+      AuthRepository authRepository, GcsUploader gcsUploader,
       FileUtil fileUtil) {
     this.foreignerInformationRepository = foreignerInformationRepository;
     this.companyRepository = companyRepository;
     this.signRepository = signRepository;
+    this.authRepository = authRepository;
     this.gcsUploader = gcsUploader;
     this.fileUtil = fileUtil;
   }
@@ -68,7 +72,9 @@ public class UserInformationService {
     foreignerInformationRepository.save(newForeignerInformation);
   }
 
-  public VisaResponse findVisa(User user) {
+  public VisaResponse findVisa(Long userId) {
+    User user = authRepository.findById(userId)
+        .orElseThrow(() -> new NoSuchElementException("해당 유저가 없습니다."));
     ForeignerInformation foreignerInformation = foreignerInformationRepository.findByUser(user);
     String visaGenerateDate = foreignerInformation.getVisaGenerateDate().toString();
     String visaExpiryDate = foreignerInformation.getVisaExpiryDate().toString();
