@@ -35,6 +35,8 @@ public class Recruitment {
   private String preferredConditions;
   private String employerName;
   private String companyName;
+  private Boolean hiring;
+
   @ManyToOne
   @JoinColumn(name = "companyId")
   private Company company;
