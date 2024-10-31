@@ -34,24 +34,23 @@ public class ContractService {
 
   public void handleEmployerContractCreation(ContractRequest request, User user)
       throws DocumentException, IOException {
-    byte[] pdfData = pdfService.createPdf(request, user, "contract.pdf");
-    byte[] pdfDataV = pdfService.createPdf(request, user, "contract_vietnam.pdf");
+
     String dirName = "contracts";
     String fileName = user.getId() + "_" + request.applyId() + ".pdf";
     String fileNameV = user.getId() + "_" + request.applyId() + "V.pdf";
+
+    byte[] pdfData = pdfService.createPdf(request, user, "contract.pdf");
     String pdfUrl = fileService.uploadContractPdf(pdfData, dirName, fileName);
+
+    byte[] pdfDataV = pdfService.createPdf(request, user, "contract_vietnam.pdf");
     String pdfUrlV = fileService.uploadContractPdf(pdfDataV, dirName, fileNameV);
+
     createContract(request, pdfUrl, pdfUrlV);
   }
 
+  @Transactional
   public void handleEmployeeSignature(ContractRequest request, User user)
       throws DocumentException, IOException {
-    byte[] pdfData = fileService.getPdf(request);
-    byte[] pdfDataV = fileService.getPdfV(request);
-    byte[] updatedPdfData = pdfService.fillInEmployeeSign(pdfData, user);
-    byte[] updatedPdfDataV = pdfService.fillInEmployeeSign(pdfDataV, user);
-    byte[] image = pdfService.convertPdfToImage(updatedPdfData);
-    byte[] imageV = pdfService.convertPdfToImage(updatedPdfDataV);
 
     String dirName = "contracts";
     String pdfFileName = user.getId() + "_" + request.applyId() + "update.pdf";
@@ -59,8 +58,15 @@ public class ContractService {
     String imageFileName = user.getId() + "_" + request.applyId() + "update.png";
     String imageFileNameV = user.getId() + "_" + request.applyId() + "updateV.png";
 
+    byte[] pdfData = fileService.getPdf(request);
+    byte[] updatedPdfData = pdfService.fillInEmployeeSign(pdfData, user);
+    byte[] image = pdfService.convertPdfToImage(updatedPdfData);
     String pdfUrl = fileService.uploadContractPdf(updatedPdfData, dirName, pdfFileName);
     String imageUrl = fileService.uploadContractPdf(image, dirName, imageFileName);
+
+    byte[] pdfDataV = fileService.getPdfV(request);
+    byte[] updatedPdfDataV = pdfService.fillInEmployeeSign(pdfDataV, user);
+    byte[] imageV = pdfService.convertPdfToImage(updatedPdfDataV);
     String pdfUrlV = fileService.uploadContractPdf(updatedPdfDataV, dirName, pdfFileNameV);
     String imageUrlV = fileService.uploadContractPdf(imageV, dirName, imageFileNameV);
 
@@ -75,14 +81,16 @@ public class ContractService {
     contractRepository.save(
         Contract.builder()
             .salary(request.salary())
+            .workingPlace(request.workingPlace())
             .workingHours(request.workingHours())
+            .responsibilities(request.responsibilities())
+            .annualPaidLeave(request.annualPaidLeave())
+            .dayOff(request.dayOff())
+            .rule(request.rule())
             .imageFileUrl(null)
             .pdfFileUrl(pdfUrl)
             .imageFileUrlV(null)
             .pdfFileUrlV(pdfUrlV)
-            .annualPaidLeave(request.annualPaidLeave())
-            .dayOff(request.dayOff())
-            .rule(request.rule())
             .apply(apply).build()
     );
   }
