@@ -87,7 +87,7 @@ public class ApplyService {
         .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
     RecruitmentsOfApplierResponse recruitmentsOfApplierResponse = new RecruitmentsOfApplierResponse(
         recruitment.getRecruitmentId(), company.getLogoImage(), recruitment.getKoreanTitle(),
-        recruitment.getArea(), apply.getStatus());
+        recruitment.getArea(), apply.getStatus(),apply.getId());
     return recruitmentsOfApplierResponse;
   }
 
