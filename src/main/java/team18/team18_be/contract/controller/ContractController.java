@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.contract.dto.request.ContractRequest;
+import team18.team18_be.contract.dto.response.ContractFileResponse;
 import team18.team18_be.contract.dto.response.ContractResponse;
 import team18.team18_be.contract.service.ContractService;
 
@@ -46,13 +47,19 @@ public class ContractController {
 
   @ApiOperation(value = "근로계약서 id별 pdf url 반환 메서드")
   @GetMapping("/{applyId}/download")
-  public ResponseEntity<ContractResponse> downloadContract(@PathVariable("applyId") Long id) {
+  public ResponseEntity<ContractFileResponse> downloadContract(@PathVariable("applyId") Long id) {
     return ResponseEntity.ok(contractService.getContractPdfUrl(id));
   }
 
   @ApiOperation(value = "근로계약서 id별 image url 반환 메서드")
   @GetMapping("/{applyId}/preview")
-  public ResponseEntity<ContractResponse> previewContract(@PathVariable("applyId") Long id) {
+  public ResponseEntity<ContractFileResponse> previewContract(@PathVariable("applyId") Long id) {
     return ResponseEntity.ok(contractService.getContractImageUrl(id));
+  }
+
+  @ApiOperation(value = "근로계약서 id별 근로계약서 정보 반환 메서드")
+  @GetMapping("/{applyId}")
+  public ResponseEntity<ContractResponse> getContract(@PathVariable("applyId") Long id) {
+    return ResponseEntity.ok(contractService.getContract(id));
   }
 }

@@ -28,11 +28,11 @@ public class PdfService {
     this.fileService = fileService;
   }
 
-  public byte[] createPdf(ContractRequest request, User user)
+  public byte[] createPdf(ContractRequest request, User user, String pdfName)
       throws DocumentException, IOException {
 
     // 원본 파일 읽기
-    ClassPathResource resource = new ClassPathResource("contract.pdf");
+    ClassPathResource resource = new ClassPathResource(pdfName);
     // 메모리 안에 PDF 파일을 담기 위한 스트림
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
