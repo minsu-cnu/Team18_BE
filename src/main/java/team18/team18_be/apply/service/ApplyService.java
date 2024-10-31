@@ -1,6 +1,5 @@
 package team18.team18_be.apply.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -49,8 +48,7 @@ public class ApplyService {
   public Long createApplicationForm(ApplicationFormRequest applicationFormRequest,
       Long recruitmentId, User user) {
     ApplyStatus status = ApplyStatus.REVIEWING_APPLICATION;
-    Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
-        .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
+    Recruitment recruitment = findRecruitment(recruitmentId);
     Apply apply = new Apply(status.getKoreanName(), user, recruitment);
     Apply savedApply = applyRepository.save(apply);
 
@@ -59,13 +57,10 @@ public class ApplyService {
 
 
   public List<ApplierPerRecruitmentResponse> searchApplicant(Long recruitmentId, User user) {
-    Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
-        .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
-
-    List<Apply> applyList = applyRepository.findByRecruitment(recruitment);
+    Recruitment recruitment = findRecruitment(recruitmentId);
 
     return applyRepository.findByRecruitment(recruitment).stream()
-        .map(this::createApplierPerRecruitmentResponse)  // 각 Apply 객체를 변환
+        .map(this::createApplierPerRecruitmentResponse)
         .collect(Collectors.toList());
   }
 
@@ -79,22 +74,21 @@ public class ApplyService {
   }
 
   public List<RecruitmentsOfApplierResponse> searchMyAppliedRecruitments(User user) {
-    List<RecruitmentsOfApplierResponse> recruitmentsOfApplierResponseList = new ArrayList<>();
-    List<Apply> applys = applyRepository.findByUser(user); //지원자의 지원 가져오기
-    for (Apply apply : applys) {
-      //지원자가 지원한 공고글
-      Recruitment recruitment = recruitmentRepository.findById(
-              apply.getRecruitment().getRecruitmentId())
-          .orElseThrow(() -> new NoSuchElementException("해당 공고가 없습니다."));
-      //공고글의 회사
-      Company company = companyRepository.findById(recruitment.getCompany().getId())
-          .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
-      RecruitmentsOfApplierResponse recruitmentsOfApplierResponse = new RecruitmentsOfApplierResponse(
-          recruitment.getRecruitmentId(), company.getLogoImage(), recruitment.getKoreanTitle(),
-          recruitment.getArea(), apply.getStatus());
-      recruitmentsOfApplierResponseList.add(recruitmentsOfApplierResponse);
-    }
-    return recruitmentsOfApplierResponseList;
+    return applyRepository.findByUser(user).stream()
+        .map(this::createMyAppliedRecruitments)
+        .collect(Collectors.toList());
+  }
+
+  private RecruitmentsOfApplierResponse createMyAppliedRecruitments(Apply apply) {
+    //지원자가 지원한 공고글
+    Recruitment recruitment = findRecruitment(apply.getRecruitment().getRecruitmentId());
+    //공고글의 회사
+    Company company = companyRepository.findById(recruitment.getCompany().getId())
+        .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
+    RecruitmentsOfApplierResponse recruitmentsOfApplierResponse = new RecruitmentsOfApplierResponse(
+        recruitment.getRecruitmentId(), company.getLogoImage(), recruitment.getKoreanTitle(),
+        recruitment.getArea(), apply.getStatus());
+    return recruitmentsOfApplierResponse;
   }
 
   public MandatoryResponse checkMandatory(User user) {
@@ -106,6 +100,12 @@ public class ApplyService {
     MandatoryResponse mandatoryResponse = new MandatoryResponse(resumeExistence, visaExistence,
         foreignerIdNumberExistence);
     return mandatoryResponse;
+  }
+
+  private Recruitment findRecruitment(Long recruitmentId) {
+    Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
+        .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
+    return recruitment;
   }
 
   private boolean checkNull(Object object) {
