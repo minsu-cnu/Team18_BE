@@ -26,11 +26,11 @@ public class Contract {
   private String annualPaidLeave;
   private String workingPlace;
   private String responsibilities;
+  private String rule;
   private String imageFileUrl;
   private String pdfFileUrl;
   private String imageFileUrlV;
   private String pdfFileUrlV;
-  private String rule;
   @ManyToOne
   @JoinColumn(name = "applyId")
   private Apply apply;
@@ -50,6 +50,35 @@ public class Contract {
   public String getPdfFileUrlV() {
     return pdfFileUrlV;
   }
+
+  public int getSalary() {
+    return salary;
+  }
+
+  public String getWorkingHours() {
+    return workingHours;
+  }
+
+  public String getDayOff() {
+    return dayOff;
+  }
+
+  public String getAnnualPaidLeave() {
+    return annualPaidLeave;
+  }
+
+  public String getWorkingPlace() {
+    return workingPlace;
+  }
+
+  public String getResponsibilities() {
+    return responsibilities;
+  }
+
+  public String getRule() {
+    return rule;
+  }
+
 
   public void updatePdfFileUrl(String pdfFileUrl) {
     this.pdfFileUrl = pdfFileUrl;
