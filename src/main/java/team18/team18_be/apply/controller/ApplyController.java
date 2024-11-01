@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
 import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
 import team18.team18_be.apply.service.ApplyService;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
-import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 
 @RestController
 @RequestMapping("/api/application")
