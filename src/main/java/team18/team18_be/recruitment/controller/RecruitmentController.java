@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +73,20 @@ public class RecruitmentController {
   ) {
     recruitmentService.setRecruitmentHiringFalse(recruitmentId);
     return ResponseEntity.ok().build();
+  }
+
+  @ApiOperation(value = "최근 올라온 구인글 순서대로 정렬")
+  @GetMapping("/latestRegistration")
+  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsLatestRegistration(
+      Page page
+  ) {
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment());
+  }
+
+  @ApiOperation(value = "급여 높은 순서대로 정리해서 전체 구인글 반환하는 메서드")
+  @GetMapping("/salary")
+  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsSalary() {
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment());
   }
 
 }
