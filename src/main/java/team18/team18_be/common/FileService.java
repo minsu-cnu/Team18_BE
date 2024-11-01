@@ -1,7 +1,6 @@
-package team18.team18_be.contract.service;
+package team18.team18_be.common;
 
 import io.jsonwebtoken.io.IOException;
-import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,14 +15,14 @@ import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.repository.SignRepository;
 
 @Service
-public class ContractFileService {
+public class FileService {
 
   private final GcsUploader gcsUploader;
   private final SignRepository signRepository;
   private final ContractRepository contractRepository;
   private final RestTemplate restTemplate;
 
-  public ContractFileService(GcsUploader gcsUploader, SignRepository signRepository,
+  public FileService(GcsUploader gcsUploader, SignRepository signRepository,
       ContractRepository contractRepository, RestTemplate restTemplate) {
     this.gcsUploader = gcsUploader;
     this.signRepository = signRepository;
@@ -32,9 +31,8 @@ public class ContractFileService {
   }
 
   public String uploadContractPdf(byte[] pdfData, String dirName, String fileName) {
-    Optional<String> uploadUrl = gcsUploader.upload(pdfData, dirName, fileName);
-    System.out.println(uploadUrl.orElseThrow(() -> new IOException("url을 찾을 수 없습니다.")));
-    return uploadUrl.orElseThrow(() -> new IOException("url을 찾을 수 없습니다."));
+    return gcsUploader.upload(pdfData, dirName, fileName)
+        .orElseThrow(() -> new IOException("url을 찾을 수 없습니다."));
   }
 
   public byte[] getSignImage(User user) {
@@ -63,17 +61,17 @@ public class ContractFileService {
     }
   }
 
-  public String getPdfUrl(Long applyId) {
-    Contract contract = contractRepository.findByApplyId(applyId)
+  public byte[] getPdfV(ContractRequest request) {
+    Contract contract = contractRepository.findByApplyId(request.applyId())
         .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
 
-    return contract.getPdfFileUrl();
-  }
+    ResponseEntity<byte[]> response = restTemplate.getForEntity(contract.getPdfFileUrlV(),
+        byte[].class);
 
-  public String getImageUrl(Long applyId) {
-    Contract contract = contractRepository.findByApplyId(applyId)
-        .orElseThrow(() -> new NotFoundException("해당 applyId의 Contract 객체를 찾을 수 없습니다."));
-
-    return contract.getImageFileUrl();
+    if (response.getStatusCode().is2xxSuccessful()) {
+      return response.getBody();
+    } else {
+      throw new FileDownloadException("파일 다운로드 실패");
+    }
   }
 }

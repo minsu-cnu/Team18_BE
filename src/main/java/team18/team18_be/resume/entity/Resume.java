@@ -7,9 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 import team18.team18_be.auth.entity.User;
 
 @Entity
+@Getter
+@Setter
 public class Resume {
 
   @Id
@@ -38,34 +42,19 @@ public class Resume {
     this.user = user;
   }
 
+  public Resume(Long resumeId, String applicantName, String address, String phoneNumber,
+      String career, String korean, String selfIntroduction, User user) {
+    this.resumeId = resumeId;
+    this.applicantName = applicantName;
+    this.address = address;
+    this.phoneNumber = phoneNumber;
+    this.career = career;
+    this.korean = korean;
+    this.selfIntroduction = selfIntroduction;
+    this.user = user;
+  }
+
   public Resume() {
   }
 
-  public Long getResumeId() {
-    return resumeId;
-  }
-
-  public String getApplicantName() {
-    return applicantName;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public String getPhoneNumber() {
-    return phoneNumber;
-  }
-
-  public String getCareer() {
-    return career;
-  }
-
-  public String getKorean() {
-    return korean;
-  }
-
-  public String getSelfIntroduction() {
-    return selfIntroduction;
-  }
 }
