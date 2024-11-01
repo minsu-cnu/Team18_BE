@@ -70,6 +70,7 @@ public class UserInformationController {
   @PutMapping("/visa")
   public ResponseEntity<Void> fillInVisa(@RequestBody VisaRequest visaRequest,
       @LoginUser User user) {
+    userInformationService.fillInVisa(visaRequest,user);
     return ResponseEntity.noContent().build();
   }
 
