@@ -10,6 +10,7 @@ import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.resume.dto.request.ResumeRequest;
+import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
 import team18.team18_be.resume.entity.Resume;
 import team18.team18_be.resume.mapper.ResumeMapper;
@@ -40,7 +41,7 @@ public class ResumeService {
     return resumeMapper.toResumeResponse(resumeRepository.findByUser(user));
   }
 
-  public ResumeResponse findResumeById(Long resumeId, Long applyId) {
+  public ResumeAndApplyResponse findResumeById(Long resumeId, Long applyId) {
     Resume resume = resumeRepository.findById(resumeId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
     Apply apply = applyRepository.findById(applyId)

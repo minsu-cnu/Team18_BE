@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.resume.dto.request.ResumeRequest;
+import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
 import team18.team18_be.resume.entity.Resume;
 
@@ -12,7 +13,7 @@ import team18.team18_be.resume.entity.Resume;
 public interface ResumeMapper {
   ResumeMapper INSTANCE = Mappers.getMapper(ResumeMapper.class);
   ResumeResponse toResumeResponse(Resume resume);
-  ResumeResponse toResumeAndApplyResponse(Resume resume,String motivation);
+  ResumeAndApplyResponse toResumeAndApplyResponse(Resume resume,String motivation);
 
   Resume toResume(ResumeRequest resumeRequest, User user);
 }

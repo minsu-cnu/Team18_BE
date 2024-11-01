@@ -5,6 +5,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
@@ -44,8 +47,12 @@ public class RecruitmentController {
 
   @ApiOperation(value = "구인글 전체 조회 메서드")
   @GetMapping
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitments() {
-    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment());
+  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitments(
+      @RequestParam int page
+  ) {
+    int fixedPageSize = 4;
+    Pageable pageable = PageRequest.of(page, fixedPageSize);
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment(pageable));
   }
 
   @ApiOperation(value = "구인글id로 조회 메서드")
@@ -78,15 +85,21 @@ public class RecruitmentController {
   @ApiOperation(value = "최근 올라온 구인글 순서대로 정렬")
   @GetMapping("/latestRegistration")
   public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsLatestRegistration(
-      Page page
+      @RequestParam int page
   ) {
-    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment());
+    int fixedPageSize = 4;
+    Pageable pageable = PageRequest.of(page, fixedPageSize);
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment(pageable));
   }
 
   @ApiOperation(value = "급여 높은 순서대로 정리해서 전체 구인글 반환하는 메서드")
   @GetMapping("/salary")
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsSalary() {
-    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment());
+  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsSalary(
+      @RequestParam int page
+  ) {
+    int fixedPageSize = 4;
+    Pageable pageable = PageRequest.of(page, fixedPageSize);
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment(pageable));
   }
 
 }
