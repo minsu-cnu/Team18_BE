@@ -12,6 +12,7 @@ import team18.team18_be.resume.entity.Resume;
 public interface ResumeMapper {
   ResumeMapper INSTANCE = Mappers.getMapper(ResumeMapper.class);
   ResumeResponse toResumeResponse(Resume resume);
+  ResumeResponse toResumeAndApplyResponse(Resume resume,String motivation);
 
   Resume toResume(ResumeRequest resumeRequest, User user);
 }

@@ -3,6 +3,10 @@ package team18.team18_be.resume.service;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import team18.team18_be.apply.entity.ApplicationForm;
+import team18.team18_be.apply.entity.Apply;
+import team18.team18_be.apply.repository.ApplicationFormRepository;
+import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.resume.dto.request.ResumeRequest;
@@ -16,11 +20,16 @@ public class ResumeService {
 
   private final ResumeRepository resumeRepository;
   private final ResumeMapper resumeMapper;
+  private final ApplyRepository applyRepository;
+  private final ApplicationFormRepository applicationFormRepository;
 
   public ResumeService(ResumeRepository resumeRepository,
-      ResumeMapper resumeMapper) {
+      ResumeMapper resumeMapper, ApplyRepository applyRepository,
+      ApplicationFormRepository applicationFormRepository) {
     this.resumeRepository = resumeRepository;
     this.resumeMapper = resumeMapper;
+    this.applyRepository = applyRepository;
+    this.applicationFormRepository = applicationFormRepository;
   }
 
   public void saveResume(ResumeRequest resumeRequest, User user) {
@@ -31,21 +40,13 @@ public class ResumeService {
     return resumeMapper.toResumeResponse(resumeRepository.findByUser(user));
   }
 
-  public ResumeResponse findResumeById(Long resumeId, Long userId) {
+  public ResumeResponse findResumeById(Long resumeId, Long applyId) {
     Resume resume = resumeRepository.findById(resumeId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
-
-    if (!Objects.equals(resume.getResumeId(), userId)) {
-      //에러(권한없음)
-    }
-
-    return resumeMapper.toResumeResponse(resume);
-  }
-
-  private Resume mapResumeRequestToResume(ResumeRequest resumeRequest, User user) {
-    return new Resume(resumeRequest.applicantName(), resumeRequest.address(),
-        resumeRequest.phoneNumber(), resumeRequest.career(), resumeRequest.korean(),
-        resumeRequest.selfIntroduction(), user);
+    Apply apply = applyRepository.findById(applyId)
+        .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
+    ApplicationForm applicationForm = applicationFormRepository.findByApply(apply);
+    return resumeMapper.toResumeAndApplyResponse(resume,applicationForm.getMotivation());
   }
 
 }
