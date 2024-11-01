@@ -11,7 +11,8 @@ import team18.team18_be.userInformation.entity.Company;
 public interface RecruitmentRepository extends JpaRepository<Recruitment, Long> {
 
   List<Recruitment> findByCompany(Optional<Company> company);
-  Page<Recruitment> findAllByOrderBySalaryDesc(Pageable pageable);
-  Page<Recruitment> findAllByOrderByUploadDateDesc(Pageable pageable);
+  Page<Recruitment> findAllByHiringTrueOrderBySalaryDesc(Pageable pageable);
+  Page<Recruitment> findAllByHiringTrueOrderByUploadDateDesc(Pageable pageable);
 
+  Page<Recruitment> findAllByHiringTrue(Pageable pageable);
 }

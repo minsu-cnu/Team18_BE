@@ -58,7 +58,7 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitment(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrue(pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
@@ -73,7 +73,7 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortBySalary(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAllByOrderBySalaryDesc(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderBySalaryDesc(pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
@@ -88,7 +88,7 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortByDate(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAllByOrderByUploadDateDesc(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderByUploadDateDesc(pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
