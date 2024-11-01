@@ -2,6 +2,7 @@ package team18.team18_be.userInformation.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +14,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import team18.team18_be.auth.entity.User;
-import team18.team18_be.auth.service.AuthService;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.userInformation.dto.request.CompanyRequest;
 import team18.team18_be.userInformation.dto.request.CompanyResponse;
 import team18.team18_be.userInformation.dto.request.SignResponse;
 import team18.team18_be.userInformation.dto.request.VisaRequest;
 import team18.team18_be.userInformation.dto.request.VisaResponse;
-import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.service.UserInformationService;
 
 @RestController
@@ -38,8 +37,9 @@ public class UserInformationController {
   @PostMapping(value = "/sign")
   public ResponseEntity<Void> fillInSign(@RequestParam MultipartFile imageUrl,
       @LoginUser User user) {
-    userInformationService.fillInSign(imageUrl, user);
-    return ResponseEntity.noContent().build();
+    Long signId = userInformationService.fillInSign(imageUrl, user);
+    URI location = createURI(signId);
+    return ResponseEntity.created(location).build();
   }
 
   @Operation(summary = "사인 가져오기", description = "gcs에 저장된 사인 이미지의 주소 반환")
@@ -53,8 +53,9 @@ public class UserInformationController {
   @PostMapping("/company")
   public ResponseEntity<Void> createCompany(@RequestPart CompanyRequest companyRequest,
       @RequestPart MultipartFile logoImage, @LoginUser User user) {
-    userInformationService.createCompany(companyRequest, logoImage, user);
-    return ResponseEntity.ok().build();
+    Long companyId = userInformationService.createCompany(companyRequest, logoImage, user);
+    URI location = createURI(companyId);
+    return ResponseEntity.created(location).build();
   }
 
   @Operation(summary = "회사 정보 가져오기", description = "로그인된 user의 회사 정보 가져오기")
@@ -69,8 +70,7 @@ public class UserInformationController {
   @PutMapping("/visa")
   public ResponseEntity<Void> fillInVisa(@RequestBody VisaRequest visaRequest,
       @LoginUser User user) {
-    userInformationService.fillInVisa(visaRequest, user);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "비자 정보 가져오기")
@@ -78,5 +78,9 @@ public class UserInformationController {
   public ResponseEntity<VisaResponse> findVisa(@RequestParam("userId") Long userId) {
     VisaResponse visaResponse = userInformationService.findVisa(userId);
     return ResponseEntity.ok(visaResponse);
+  }
+
+  private URI createURI(Long id) {
+    return URI.create("api/application/" + id);
   }
 }
