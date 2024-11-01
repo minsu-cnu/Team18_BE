@@ -1,6 +1,7 @@
 package team18.team18_be.recruitment.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class RecruitmentService {
     recruitmentRepository.save(
         recruitmentMapper.toRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
             recruitmentContent,companyRepository.findById(recruitmentRequest.companyId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),true
+                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),true,new Date()
             ));
 
   }
@@ -72,12 +73,22 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortBySalary(Pageable pageable) {
-    List<RecruitmentSummationResponse> recruitmentSummationResponseList = getAllRecruitment(pageable);
-    return null;
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByOrderBySalaryDesc(pageable);
+    return recruitments.stream()
+        .map(recruitment -> new RecruitmentSummationResponse(
+            recruitment.getRecruitmentId(),
+            recruitment.getCompany().getLogoImage(),
+            recruitment.getKoreanTitle(),
+            recruitment.getVietnameseTitle(),
+            recruitment.getCompanyName(),
+            recruitment.getSalary(),
+            recruitment.getArea()
+        ))
+        .collect(Collectors.toList());
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortByDate(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByOrderByUploadDateDesc(pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
