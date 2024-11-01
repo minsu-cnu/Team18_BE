@@ -54,7 +54,7 @@ public class ResumeController {
       @LoginUser User user
   ) {
 
-    return ResponseEntity.ok().body(resumeService.findResumeById(resumeId, user.getId()));
+    return ResponseEntity.ok().body(resumeService.findResumeById(resumeId,applyId));
   }
 
 }

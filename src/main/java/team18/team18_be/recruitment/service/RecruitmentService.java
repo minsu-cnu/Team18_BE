@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team18.team18_be.config.infrastructure.OpenAiService;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
@@ -54,8 +56,28 @@ public class RecruitmentService {
 
   }
 
-  public List<RecruitmentSummationResponse> getAllRecruitment() {
-    List<Recruitment> recruitments = recruitmentRepository.findAll();
+  public List<RecruitmentSummationResponse> getAllRecruitment(Pageable pageable) {
+    Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);
+    return recruitments.stream()
+        .map(recruitment -> new RecruitmentSummationResponse(
+            recruitment.getRecruitmentId(),
+            recruitment.getCompany().getLogoImage(),
+            recruitment.getKoreanTitle(),
+            recruitment.getVietnameseTitle(),
+            recruitment.getCompanyName(),
+            recruitment.getSalary(),
+            recruitment.getArea()
+        ))
+        .collect(Collectors.toList());
+  }
+
+  public List<RecruitmentSummationResponse> getAllRecruitmentAndSortBySalary(Pageable pageable) {
+    List<RecruitmentSummationResponse> recruitmentSummationResponseList = getAllRecruitment(pageable);
+    return null;
+  }
+
+  public List<RecruitmentSummationResponse> getAllRecruitmentAndSortByDate(Pageable pageable) {
+    Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
