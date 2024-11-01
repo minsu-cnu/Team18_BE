@@ -10,9 +10,6 @@ import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 @SpringBootTest
 public class OpenAiServiceTest {
 
-  @Autowired
-  private OpenAiService openAiService;
-
   private final RecruitmentRequest recruitmentRequest = new RecruitmentRequest(
       "주방 보조",                     // 직무 제목
       "중소기업",                     // 회사 규모
@@ -30,6 +27,8 @@ public class OpenAiServiceTest {
       "학사마을 식당",// 회사 이름
       1L
   );
+  @Autowired
+  private OpenAiService openAiService;
 
   @Test
   void test1() throws JsonProcessingException {
