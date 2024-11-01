@@ -39,6 +39,15 @@ public class ApplicationForm {
   public ApplicationForm() {
   }
 
+  public ApplicationForm(String name, String address, String phoneNumber, String motivation,
+      Apply apply) {
+    this.name = name;
+    this.address = address;
+    this.phoneNumber = phoneNumber;
+    this.motivation = motivation;
+    this.apply = apply;
+  }
+
   public Long getId() {
     return id;
   }

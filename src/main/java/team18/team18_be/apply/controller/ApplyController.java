@@ -17,7 +17,7 @@ import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
 import team18.team18_be.apply.service.ApplyService;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
-import team18.team18_be.userInformation.dto.request.ApplicationFormRequest;
+import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 
 @RestController
 @RequestMapping("/api/application")
