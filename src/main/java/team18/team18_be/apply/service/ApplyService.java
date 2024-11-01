@@ -5,9 +5,11 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
+import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
 import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
+import team18.team18_be.apply.entity.ApplicationForm;
 import team18.team18_be.apply.entity.Apply;
 import team18.team18_be.apply.repository.ApplicationFormRepository;
 import team18.team18_be.apply.repository.ApplyRepository;
@@ -16,7 +18,6 @@ import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.repository.RecruitmentRepository;
 import team18.team18_be.resume.entity.Resume;
 import team18.team18_be.resume.repository.ResumeRepository;
-import team18.team18_be.userInformation.dto.request.ApplicationFormRequest;
 import team18.team18_be.userInformation.entity.Company;
 import team18.team18_be.userInformation.entity.ForeignerInformation;
 import team18.team18_be.userInformation.repository.CompanyRepository;
@@ -51,7 +52,10 @@ public class ApplyService {
     Recruitment recruitment = findRecruitment(recruitmentId);
     Apply apply = new Apply(status.getKoreanName(), user, recruitment);
     Apply savedApply = applyRepository.save(apply);
-
+    ApplicationForm applicationForm = new ApplicationForm(applicationFormRequest.name(),
+        applicationFormRequest.address(), applicationFormRequest.address(),
+        applicationFormRequest.applyMotivation(), savedApply);
+    applicationFormRepository.save(applicationForm);
     return savedApply.getId();
   }
 
@@ -87,7 +91,7 @@ public class ApplyService {
         .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
     RecruitmentsOfApplierResponse recruitmentsOfApplierResponse = new RecruitmentsOfApplierResponse(
         recruitment.getRecruitmentId(), company.getLogoImage(), recruitment.getKoreanTitle(),
-        recruitment.getArea(), apply.getStatus(),apply.getId());
+        recruitment.getArea(), apply.getStatus(), apply.getId());
     return recruitmentsOfApplierResponse;
   }
 
@@ -109,6 +113,6 @@ public class ApplyService {
   }
 
   private boolean checkNull(Object object) {
-    return object == null;
+    return object != null;
   }
 }
