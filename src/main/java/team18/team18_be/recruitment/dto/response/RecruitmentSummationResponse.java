@@ -9,5 +9,4 @@ public record RecruitmentSummationResponse(
     String salary,
     String area
 ) {
-
 }

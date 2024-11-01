@@ -89,7 +89,7 @@ public class RecruitmentController {
   ) {
     int fixedPageSize = 4;
     Pageable pageable = PageRequest.of(page, fixedPageSize);
-    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment(pageable));
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitmentAndSortByDate(pageable));
   }
 
   @ApiOperation(value = "급여 높은 순서대로 정리해서 전체 구인글 반환하는 메서드")
@@ -99,7 +99,7 @@ public class RecruitmentController {
   ) {
     int fixedPageSize = 4;
     Pageable pageable = PageRequest.of(page, fixedPageSize);
-    return ResponseEntity.ok().body(recruitmentService.getAllRecruitment(pageable));
+    return ResponseEntity.ok().body(recruitmentService.getAllRecruitmentAndSortBySalary(pageable));
   }
 
 }

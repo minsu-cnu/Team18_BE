@@ -1,5 +1,6 @@
 package team18.team18_be.recruitment.mapper;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
@@ -20,7 +21,8 @@ public interface RecruitmentMapper {
 
 
   Recruitment toRecruitment(String koreanTitle, String vietnameseTitle,
-      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent, Company company,Boolean hiring);
+      RecruitmentRequest recruitmentRequest, RecruitmentContent recruitmentContent, Company company,Boolean hiring,
+      Date uploadDate);
 
   RecruitmentResponse toRecruitmentResponse(Recruitment recruitment,RecruitmentContent recruitmentContent);
 }
