@@ -58,17 +58,21 @@ jobs:
         with:
           name: team18-be-jar
 
-      - id: auth
-        name: Authenticate to GCP
-        uses: google-github-actions/auth@v0
-        with:
-          credentials_json: ${{ secrets.HIREHIGHER_GCP_KEY }}
-
       - name: Deploy to GCP
         run: |
-          gcloud compute scp /home/runner/work/Team18_BE/Team18_BE/team18-be-0.0.1-SNAPSHOT.jar hirehigher-api:/home/hirehigher/repository
-          
-          gcloud compute ssh --project=${{ secrets.GCP_PROJECT_ID }} --zone=${{ secrets.GCP_ZONE }} ${{ secrets.GCP_VM_USER_NAME }}@${{ secrets.GCP_VM_INSTANCE_NAME }} -- \
-          "cd /home/hirehigher/repository && \
-          ./deploy.sh"
-        
+          # 필요한 패키지 설치
+          sudo apt-get update
+          sudo apt-get install -y google-cloud-cli
+
+          # GCP 인증
+          echo "${{ secrets.HIREHIGHER_GCP_KEY }}" | base64 --decode > ${HOME}/gcp-key.json
+          gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
+
+          # GCP 프로젝트 설정
+          gcloud config set project fleet-point-420405
+
+          # GCP VM 인스턴스에 JAR 파일 전송
+          gcloud compute scp ./build/libs/team18-be-0.0.1-SNAPSHOT.jar hirehigher-api:/home/hirehigher/repository --zone asia-northeast3-a
+
+          # GCP VM에서 배포 쉘 스크립트 실행
+          gcloud compute ssh hirehigher-api --zone asia-northeast3-a --command 'bash /home/hirehigher/repository/deploy.sh'
