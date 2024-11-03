@@ -1,14 +1,12 @@
 package team18.team18_be.resume.service;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.entity.ApplicationForm;
 import team18.team18_be.apply.entity.Apply;
 import team18.team18_be.apply.repository.ApplicationFormRepository;
 import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
-import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.resume.dto.request.ResumeRequest;
 import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
@@ -47,7 +45,7 @@ public class ResumeService {
     Apply apply = applyRepository.findById(applyId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
     ApplicationForm applicationForm = applicationFormRepository.findByApply(apply);
-    return resumeMapper.toResumeAndApplyResponse(resume,applicationForm.getMotivation());
+    return resumeMapper.toResumeAndApplyResponse(resume, applicationForm.getMotivation());
   }
 
 }
