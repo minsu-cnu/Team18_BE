@@ -68,6 +68,9 @@ jobs:
           echo "${{ secrets.HIREHIGHER_GCP_KEY }}" | base64 --decode > ${HOME}/gcp-key.json
           gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
 
+          # GCP 프로젝트 설정
+          gcloud config set project fleet-point-420405
+
           # GCP VM 인스턴스에 JAR 파일 전송
           gcloud compute scp ./build/libs/team18-be-0.0.1-SNAPSHOT.jar hirehigher-api:/home/hirehigher/repository --zone asia-northeast3-a
 
