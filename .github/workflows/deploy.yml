@@ -39,8 +39,8 @@ jobs:
       - name: gradlew에 실행 권한 부여
         run: chmod +x ./gradlew
       
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+      - name: 배포 파일 생성
+        run: ./gradlew bootJar
 
       - name: Upload JAR file
         uses: actions/upload-artifact@v3
@@ -65,7 +65,7 @@ jobs:
           sudo apt-get install -y google-cloud-cli
 
           # GCP 인증
-          echo "${{ secrets.HIREHIGHER_GCP_SSH_KEY }}" > ${HOME}/gcp-key.json
+          echo "${{ secrets.HIREHIGHER_GCP_KEY }}" > ${HOME}/gcp-key.json
           gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
 
           # GCP VM 인스턴스에 JAR 파일 전송
