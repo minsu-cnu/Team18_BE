@@ -20,14 +20,16 @@ jobs:
           distribution: 'adopt'
 
       - name: Configure Production Properties
-      - run: touch ./src/main/resources/application-prod.properties
-      - run: echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" > ./src/main/resources/application-prod.properties
-      - run: cat ./src/main/resources/application-prod.properties
+        run: |
+          touch ./src/main/resources/application-prod.properties
+          echo "${{ secrets.APPLICATION_PROD_PROPERTIES }}" > ./src/main/resources/application-prod.properties
+          cat ./src/main/resources/application-prod.properties
 
       - name: Configure GCS Properties
-      - run: touch ./src/main/resources/application-gcs.properties
-      - run: echo "${{ secrets.APPLICATION_GCS_PROPERTIES }}" > ./src/main/resources/application-gcs.properties
-      - run: cat ./src/main/resources/application-gcs.properties
+        run: |
+          touch ./src/main/resources/application-gcs.properties
+          echo "${{ secrets.APPLICATION_GCS_PROPERTIES }}" > ./src/main/resources/application-gcs.properties
+          cat ./src/main/resources/application-gcs.properties
 
       - name: Build with Gradle
         run: ./gradlew build
