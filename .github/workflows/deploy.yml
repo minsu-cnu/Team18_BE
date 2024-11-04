@@ -47,7 +47,7 @@ jobs:
         with:
           name: team18-be-jar
           path: build/libs/team18-be-0.0.1-SNAPSHOT.jar
-
+          
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -58,7 +58,12 @@ jobs:
         with:
           name: team18-be-jar
 
+      - name: Configure SSH private key
+        run: |
+          touch ./key-hirehigher
+          echo "${{ secrets.HIREHIGHER_GCP_SSH_KEY }}" > ./key-hirehigher
+
       - name: Deploy to GCP
         run: |
           # scp로 VM에 jar 파일 전송
-          sudo scp ./build/libs/team18-be-0.0.1-SNAPSHOT.jar hirehigher-api:/home/hirehigher/repository --zone asia-northeast3-a
+          sudo scp -i ./key-hirehigher ./build/libs/team18-be-0.0.1-SNAPSHOT.jar hirehigher@${{ secrets.GCP_VM_IP }}:/home/hirehigher/repository
