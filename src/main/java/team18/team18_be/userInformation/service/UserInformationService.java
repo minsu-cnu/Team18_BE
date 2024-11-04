@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team18.team18_be.auth.entity.User;
+import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.config.GCS.FileUtil;
 import team18.team18_be.config.GCS.GcsUploader;
 import team18.team18_be.userInformation.dto.request.CompanyRequest;
@@ -26,21 +27,24 @@ public class UserInformationService {
   private final ForeignerInformationRepository foreignerInformationRepository;
   private final CompanyRepository companyRepository;
   private final SignRepository signRepository;
+  private final AuthRepository authRepository;
   private final GcsUploader gcsUploader;
   private final FileUtil fileUtil;
 
 
   public UserInformationService(ForeignerInformationRepository foreignerInformationRepository,
-      CompanyRepository companyRepository, SignRepository signRepository, GcsUploader gcsUploader,
+      CompanyRepository companyRepository, SignRepository signRepository,
+      AuthRepository authRepository, GcsUploader gcsUploader,
       FileUtil fileUtil) {
     this.foreignerInformationRepository = foreignerInformationRepository;
     this.companyRepository = companyRepository;
     this.signRepository = signRepository;
+    this.authRepository = authRepository;
     this.gcsUploader = gcsUploader;
     this.fileUtil = fileUtil;
   }
 
-  public void createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
+  public Long createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
     byte[] imageFile = fileUtil.safelyGetBytes(logoImage)
         .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
     String storedFileName = gcsUploader.upload(imageFile, "companyLogo",
@@ -48,7 +52,8 @@ public class UserInformationService {
         .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
     Company company = new Company(companyRequest.name(), companyRequest.industryOccupation(),
         companyRequest.brand(), companyRequest.revenuePerYear(), storedFileName, user);
-    companyRepository.save(company);
+    Company savedCompany = companyRepository.save(company);
+    return savedCompany.getId();
   }
 
   public CompanyResponse findCompany(User user) {
@@ -59,16 +64,20 @@ public class UserInformationService {
     return companyResponse;
   }
 
-  public void fillInVisa(VisaRequest visaRequest, User user) {
+  public Long fillInVisa(VisaRequest visaRequest, User user) {
     LocalDate visaGenerateDate = LocalDate.parse(visaRequest.visaGenerateDate());
     LocalDate visaExpiryDate = visaGenerateDate.plusYears(10);
     ForeignerInformation newForeignerInformation = new ForeignerInformation(user.getId(),
         visaRequest.foreignerIdNumber(),
         visaGenerateDate, visaExpiryDate, user);
-    foreignerInformationRepository.save(newForeignerInformation);
+    ForeignerInformation savedForeignerInformation = foreignerInformationRepository.save(
+        newForeignerInformation);
+    return savedForeignerInformation.getId();
   }
 
-  public VisaResponse findVisa(User user) {
+  public VisaResponse findVisa(Long userId) {
+    User user = authRepository.findById(userId)
+        .orElseThrow(() -> new NoSuchElementException("해당 유저가 없습니다."));
     ForeignerInformation foreignerInformation = foreignerInformationRepository.findByUser(user);
     String visaGenerateDate = foreignerInformation.getVisaGenerateDate().toString();
     String visaExpiryDate = foreignerInformation.getVisaExpiryDate().toString();
@@ -77,14 +86,15 @@ public class UserInformationService {
     return visaResponse;
   }
 
-  public void fillInSign(MultipartFile imageUrl, User user) {
+  public Long fillInSign(MultipartFile imageUrl, User user) {
     byte[] imageFile = fileUtil.safelyGetBytes(imageUrl)
         .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
     String storedFileName = gcsUploader.upload(imageFile, "Sign",
             user.getId().toString() + RandomStringUtils.random(5) + imageUrl.getOriginalFilename())
         .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
     Sign newSign = new Sign(storedFileName, user);
-    signRepository.save(newSign);
+    Sign savedSign = signRepository.save(newSign);
+    return savedSign.getId();
   }
 
   public SignResponse findSign(User user) {

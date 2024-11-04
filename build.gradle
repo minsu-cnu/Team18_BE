@@ -37,8 +37,15 @@ dependencies {
 	implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.13'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
+	implementation 'mysql:mysql-connector-java:8.0.33'
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+}
+
+test {
+	systemProperty 'spring.profiles.active', 'test'
 }
 
 tasks.named('test') {
