@@ -51,9 +51,10 @@ public class RecruitmentService {
         new RecruitmentContent(koreanDetailedDescription, vietnameseDetailedDescription));
     recruitmentRepository.save(
         recruitmentMapper.toRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
-            recruitmentContent,companyRepository.findById(recruitmentRequest.companyId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")),true,new Date()
-            ));
+            recruitmentContent, companyRepository.findById(recruitmentRequest.companyId())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")), true,
+            new Date()
+        ));
 
   }
 
@@ -73,7 +74,8 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortBySalary(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderBySalaryDesc(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderBySalaryDesc(
+        pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
@@ -88,7 +90,8 @@ public class RecruitmentService {
   }
 
   public List<RecruitmentSummationResponse> getAllRecruitmentAndSortByDate(Pageable pageable) {
-    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderByUploadDateDesc(pageable);
+    Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderByUploadDateDesc(
+        pageable);
     return recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
@@ -105,7 +108,8 @@ public class RecruitmentService {
   public RecruitmentResponse getRecruitmentResponseByRecruitmentId(Long userId) {
     Recruitment recruitment = recruitmentRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
-    return recruitmentMapper.toRecruitmentResponse(recruitment,recruitment.getRecruitmentContent());
+    return recruitmentMapper.toRecruitmentResponse(recruitment,
+        recruitment.getRecruitmentContent());
   }
 
   public List<RecruitmentResponseForCompany> getRecruitmentResponseByCompanyId(Long companyId) {
@@ -125,8 +129,8 @@ public class RecruitmentService {
         .collect(Collectors.toList());
   }
 
-  public void setRecruitmentHiringFalse(Long recruitmentId){
-    Recruitment recruitment =  recruitmentRepository.findById(recruitmentId)
+  public void setRecruitmentHiringFalse(Long recruitmentId) {
+    Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다."));
     recruitment.setHiring(false);
     recruitmentRepository.save(recruitment);
