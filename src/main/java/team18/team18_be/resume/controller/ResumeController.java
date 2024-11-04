@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.resume.dto.request.ResumeRequest;
+import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
 import team18.team18_be.resume.service.ResumeService;
 
@@ -46,12 +47,14 @@ public class ResumeController {
   }
 
   @ApiOperation(value = "이력서 id로 이력서 조회 메서드")
-  @GetMapping("/{resumeId}")
-  public ResponseEntity<ResumeResponse> getResumeById(
+  @GetMapping("/{resumeId}/{applyId}")
+  public ResponseEntity<ResumeAndApplyResponse> getResumeById(
       @PathVariable Long resumeId,
+      @PathVariable Long applyId,
       @LoginUser User user
   ) {
-    return ResponseEntity.ok().body(resumeService.findResumeById(resumeId, user.getId()));
+
+    return ResponseEntity.ok().body(resumeService.findResumeById(resumeId,applyId));
   }
 
 }
