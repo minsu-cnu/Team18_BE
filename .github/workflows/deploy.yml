@@ -62,6 +62,10 @@ jobs:
         run: |
           touch ./key-hirehigher
           echo "${{ secrets.HIREHIGHER_GCP_SSH_KEY }}" > ./key-hirehigher
+          chmod 600 ./key-hirehigher
+
+      - name: Add GCP VM to known_hosts
+        run: ssh-keyscan -H "${{ secrets.GCP_VM_IP }}" >> ~/.ssh/known_hosts
 
       - name: Deploy to GCP
         run: |
