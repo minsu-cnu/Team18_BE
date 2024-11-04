@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
 import team18.team18_be.apply.dto.request.ApplicationFormRequest;
+import team18.team18_be.apply.dto.response.ApplicationFormResponse;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
 import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
@@ -54,9 +55,19 @@ public class ApplyService {
     Apply savedApply = applyRepository.save(apply);
     ApplicationForm applicationForm = new ApplicationForm(applicationFormRequest.name(),
         applicationFormRequest.address(), applicationFormRequest.address(),
-        applicationFormRequest.applyMotivation(), savedApply);
+        applicationFormRequest.motivation(), savedApply);
     applicationFormRepository.save(applicationForm);
     return savedApply.getId();
+  }
+
+  public ApplicationFormResponse findApplication(Long applyId) {
+    Apply apply = applyRepository.findById(applyId)
+        .orElseThrow(() -> new NoSuchElementException("해당 지원서가 없습니다"));
+    ApplicationForm applicationForm = applicationFormRepository.findByApply(apply);
+    ApplicationFormResponse applicationFormResponse = new ApplicationFormResponse(
+        applicationForm.getName(), applicationForm.getAddress(), applicationForm.getAddress(),
+        applicationForm.getMotivation());
+    return applicationFormResponse;
   }
 
 
@@ -115,4 +126,5 @@ public class ApplyService {
   private boolean checkNull(Object object) {
     return object != null;
   }
+
 }
