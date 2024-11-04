@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 import team18.team18_be.apply.dto.response.ApplicationFormResponse;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
@@ -19,7 +19,6 @@ import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
 import team18.team18_be.apply.service.ApplyService;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
-import team18.team18_be.apply.dto.request.ApplicationFormRequest;
 
 
 @RestController
@@ -47,7 +46,8 @@ public class ApplyController {
 
   @Operation(summary = "특정 지원서 조회")
   @GetMapping("/form/{applyId}")
-  public ResponseEntity<ApplicationFormResponse> findApplication(@PathVariable Long applyId, @LoginUser User user){
+  public ResponseEntity<ApplicationFormResponse> findApplication(@PathVariable Long applyId,
+      @LoginUser User user) {
     ApplicationFormResponse applicationFormResponse = applyService.findApplication(applyId);
     return ResponseEntity.ok(applicationFormResponse);
   }
