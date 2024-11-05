@@ -21,6 +21,9 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
+      - name : Override APPLICATION PROPERTIES
+        run : echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+      
       - name: Configure Production Properties
         run: |
           touch ./src/main/resources/application-prod.properties
