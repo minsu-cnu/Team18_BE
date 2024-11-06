@@ -137,7 +137,6 @@ public class AuthService {
     SecretKey key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .claim(USER_ID, user.getId())
-        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60L))
         .signWith(key)
         .compact();
   }
