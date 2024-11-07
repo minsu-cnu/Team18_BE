@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.NoSuchElementException;
 import javax.crypto.SecretKey;
 import org.apache.logging.log4j.util.InternalException;
