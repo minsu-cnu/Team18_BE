@@ -83,8 +83,9 @@ jobs:
           # 기존의 source-ranges 값 가져오기
           EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
 
+
           # 세미콜론 제거
-          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/;*$//')
+          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/[;[:space:]]*$//')
           
           # GitHub Actions IP를 추가
           gcloud compute firewall-rules update default-allow-ssh \
