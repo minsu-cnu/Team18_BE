@@ -61,6 +61,25 @@ jobs:
         with:
           name: team18-be-jar
 
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Get GitHub Actions Runner IP
+        id: get_ip
+        run: |
+          echo $(curl -s https://api64.ipify.org) > RUNNER_IP.txt
+
+      - name: Add GitHub Actions IP to GCP Firewall
+        run: |
+          RUNNER_IP=$(cat RUNNER_IP.txt)
+          gcloud compute firewall-rules update default-allow-ssh \
+            --allow tcp:22 \
+            --source-ranges=${RUNNER_IP}/32
+
       - name: Configure SSH private key
         run: |
           touch ./key-hirehigher
@@ -76,3 +95,9 @@ jobs:
         run: |
           # scp로 VM에 jar 파일 전송
           scp -o StrictHostKeyChecking=no -i ./key-hirehigher ./team18-be-0.0.1-SNAPSHOT.jar hirehigher@${{ secrets.GCP_VM_IP }}:/home/hirehigher/repository
+
+      - name: Remove GitHub Actions IP from GCP Firewall
+        run: |
+          RUNNER_IP=$(cat RUNNER_IP.txt)
+          gcloud compute firewall-rules update default-allow-ssh \
+            --remove-source-ranges=${RUNNER_IP}/32
