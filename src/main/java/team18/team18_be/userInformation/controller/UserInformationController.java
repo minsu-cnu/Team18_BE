@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.net.URI;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class UserInformationController {
   }
 
   @Operation(summary = "사인등록", description = "image파일을 받아 gcs에 해당 이미지 저장")
-  @PostMapping(value = "/sign")
+  @PostMapping(value = "/sign", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> fillInSign(@RequestParam MultipartFile imageUrl,
       @LoginUser User user) {
     Long signId = userInformationService.fillInSign(imageUrl, user);
@@ -71,9 +72,9 @@ public class UserInformationController {
 
   @Operation(summary = "회사 정보 가져오기", description = "로그인된 user의 회사 정보 가져오기")
   @GetMapping("/company")
-  public ResponseEntity<CompanyResponse> findCompany(@LoginUser User user) {
-    CompanyResponse companyResponse = userInformationService.findCompany(user);
-    return ResponseEntity.ok(companyResponse);
+  public ResponseEntity<List<CompanyResponse>> findCompany(@LoginUser User user) {
+    List<CompanyResponse> companyResponses = userInformationService.findCompany(user);
+    return ResponseEntity.ok(companyResponses);
   }
 
 
