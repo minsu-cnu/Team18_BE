@@ -62,7 +62,7 @@ jobs:
           name: team18-be-jar
 
       - name: Authenticate with GCP
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v1
         with:
           credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
 
@@ -79,9 +79,19 @@ jobs:
       - name: Add GitHub Actions IP to GCP Firewall
         run: |
           RUNNER_IP=$(cat RUNNER_IP.txt)
-          gcloud compute firewall-rules update default-allow-ssh \
-            --allow tcp:22 \
-            --source-ranges=${RUNNER_IP}/32
+          
+          # 기존의 source-ranges 값을 가져옵니다.
+          EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
+          
+          # GitHub Actions IP가 이미 있다면 추가하지 않도록 방지
+          if [[ "$EXCLUDE_IPS" != *"$RUNNER_IP/32"* ]]; then
+            # GitHub Actions IP를 추가
+            gcloud compute firewall-rules update default-allow-ssh \
+              --allow tcp:22 \
+              --source-ranges="${EXCLUDE_IPS},${RUNNER_IP}/32"
+          else
+            echo "GitHub Actions IP already exists in the source-ranges"
+          fi
 
       - name: Configure SSH private key
         run: |
@@ -102,5 +112,13 @@ jobs:
       - name: Remove GitHub Actions IP from GCP Firewall
         run: |
           RUNNER_IP=$(cat RUNNER_IP.txt)
+          
+          # 기존 firewall 규칙 가져오기
+          EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
+          
+          # GitHub Actions IP를 제외한 source ranges 설정
+          NEW_SOURCE_RANGES=$(echo $EXCLUDE_IPS | sed "s/$RUNNER_IP\/32//g")
+          
+          # 업데이트된 firewall 규칙 적용
           gcloud compute firewall-rules update default-allow-ssh \
-            --remove-source-ranges=${RUNNER_IP}/32
+            --source-ranges=$NEW_SOURCE_RANGES
