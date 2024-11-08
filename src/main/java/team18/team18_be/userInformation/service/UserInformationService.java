@@ -1,7 +1,10 @@
 package team18.team18_be.userInformation.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,14 +59,19 @@ public class UserInformationService {
     return savedCompany.getId();
   }
 
-  public CompanyResponse findCompany(User user) {
-    Company company = companyRepository.findByUser(user)
-        .orElseThrow(() -> new NoSuchElementException("해당 회사 정보가 없습니다"));
+  public List<CompanyResponse> findCompany(User user) {
+    return companyRepository.findByUser(user).orElse(Collections.emptyList()).stream()
+        .map(this::createCompanyResponse)
+        .collect(Collectors.toList());
+  }
+
+  private CompanyResponse createCompanyResponse(Company company) {
     CompanyResponse companyResponse = new CompanyResponse(company.getId(), company.getName(),
         company.getIndustryOccupation(), company.getBrand(), company.getRevenuePerYear(),
         company.getLogoImage());
     return companyResponse;
   }
+
 
   public Long fillInVisa(VisaRequest visaRequest, User user) {
     LocalDate visaGenerateDate = LocalDate.parse(visaRequest.visaGenerateDate());
