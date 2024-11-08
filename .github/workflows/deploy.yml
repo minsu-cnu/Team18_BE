@@ -85,7 +85,7 @@ jobs:
 
 
           # 세미콜론 제거
-          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/[;[:space:]]//g')
+          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/[;[:space:]]//g' | sed 's/$/,/')
           
           # GitHub Actions IP를 추가
           gcloud compute firewall-rules update default-allow-ssh \
