@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import java.util.Date;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import team18.team18_be.userInformation.entity.Company;

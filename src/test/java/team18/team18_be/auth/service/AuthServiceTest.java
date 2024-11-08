@@ -44,8 +44,6 @@ import team18.team18_be.exception.OAuthLoginFailedException;
 @SuppressWarnings("NonAsciiCharacters")
 class AuthServiceTest {
 
-  static final String NAME = "name";
-  static final String EMAIL = "email";
   static final String PICTURE = "profile_image";
   static final String USER_INFO_URI = "/userinfo/v2/me";
   static final String APPLICATION_TEST_PROPERTIES = "application-test.properties";
@@ -75,8 +73,10 @@ class AuthServiceTest {
 
   static Stream<Arguments> 파라미터_구글_토큰_기반_회원가입_및_로그인() {
     return Stream.of(
-        Arguments.of("신규 유저일 때", new User(NAME, EMAIL, UserType.FIRST.getUserType()), true),
-        Arguments.of("기존 유저일 때", new User(NAME, EMAIL, UserType.EMPLOYER.getUserType()), false)
+        Arguments.of("신규 유저일 때", new User(USER_NAME, USER_EMAIL, UserType.FIRST.getUserType()),
+            true),
+        Arguments.of("기존 유저일 때", new User(USER_NAME, USER_EMAIL, UserType.EMPLOYER.getUserType()),
+            false)
     );
   }
 
@@ -162,11 +162,11 @@ class AuthServiceTest {
   void 구글_토큰_기반_회원가입_및_로그인(String testName, User user, boolean isNewUser)
       throws JsonProcessingException {
     // given
-    OAuthUserInfo oAuthUserInfo = new OAuthUserInfo(NAME, EMAIL, PICTURE);
+    OAuthUserInfo oAuthUserInfo = new OAuthUserInfo(USER_NAME, USER_EMAIL, PICTURE);
     mockWebServer.enqueue(
         new MockResponse().setBody(objectMapper.writeValueAsString(oAuthUserInfo)));
-    given(authRepository.existsByEmail(EMAIL)).willReturn(!isNewUser);
-    given(authRepository.findByEmail(EMAIL)).willReturn(Optional.of(user));
+    given(authRepository.existsByEmail(USER_EMAIL)).willReturn(!isNewUser);
+    given(authRepository.findByEmail(USER_EMAIL)).willReturn(Optional.of(user));
 
     String mockUri = mockWebServer.url(USER_INFO_URI).toString();
     OAuthJwtResponse oAuthJwtResponse = new OAuthJwtResponse(OAUTH_ACCESS_TOKEN);
@@ -181,6 +181,7 @@ class AuthServiceTest {
     SoftAssertions.assertSoftly(softly -> {
       assertThat(loginResponse.type()).isEqualTo(user.getType());
       assertThat(loginResponse.profileImage()).isEqualTo(PICTURE);
+      assertThat(loginResponse.name()).isEqualTo(USER_NAME);
       assertThat(loginResponse.accessToken()).isNotNull();
     });
   }
