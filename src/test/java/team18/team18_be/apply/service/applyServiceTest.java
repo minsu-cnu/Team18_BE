@@ -82,7 +82,7 @@ public class applyServiceTest {
   public void testCreateApplicationForm() {
     // Given
     ApplicationFormRequest request = new ApplicationFormRequest("홍길동", "123 Street",
-        "my_motivation");
+        "01012345678","my_motivation");
     Long recruitmentId = 1L;
 
     when(applyRepository.save(any(Apply.class))).thenReturn(
