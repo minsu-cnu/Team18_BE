@@ -1,6 +1,7 @@
 package team18.team18_be.common;
 
 import io.jsonwebtoken.io.IOException;
+import java.util.NoSuchElementException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -36,7 +37,8 @@ public class FileService {
   }
 
   public byte[] getSignImage(User user) {
-    Sign sign = signRepository.findByUser(user);
+    Sign sign = signRepository.findByUser(user)
+        .orElseThrow(() -> new NoSuchElementException("해당 사인이 없습니다"));
 
     ResponseEntity<byte[]> response = restTemplate.getForEntity(sign.getImageUrl(), byte[].class);
 
