@@ -35,7 +35,7 @@ public class ResumeService {
     resumeRepository.save(resumeMapper.toResume(resumeRequest, user));
   }
 
-  public ResumeResponse findResumeByEmployeeId(User user) {
+  public ResumeResponse findResumeByEmployee(User user) {
     return resumeMapper.toResumeResponse(resumeRepository.findByUser(user));
   }
 
