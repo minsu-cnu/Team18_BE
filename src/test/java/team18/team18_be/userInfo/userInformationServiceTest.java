@@ -25,7 +25,6 @@ import team18.team18_be.userInformation.dto.request.VisaRequest;
 import team18.team18_be.userInformation.dto.request.VisaResponse;
 import team18.team18_be.userInformation.entity.Company;
 import team18.team18_be.userInformation.entity.ForeignerInformation;
-import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.repository.CompanyRepository;
 import team18.team18_be.userInformation.repository.ForeignerInformationRepository;
 import team18.team18_be.userInformation.repository.SignRepository;
@@ -118,9 +117,9 @@ public class userInformationServiceTest {
     //then
     assertEquals(foreignerInformation.getForeignerIdNumber(), visaResponse.foreginerNumber());
     assertEquals(foreignerInformation.getVisaGenerateDate().toString(),
-        visaResponse.visaGenereteDate().toString());
+        visaResponse.visaGenereteDate());
     assertEquals(foreignerInformation.getVisaExpiryDate().toString(),
-        visaResponse.visaExpiryDate().toString());
+        visaResponse.visaExpiryDate());
   }
 
   @Test

@@ -62,7 +62,7 @@ public class applyServiceTest {
     MockitoAnnotations.openMocks(this);
     employee = new User(1L, "홍길동", "abcd@naver.com", "2");
     employer = new User(2L, "A사장", "employer@naver.com", "1");
-    company = new Company(1L,"A", "Food", "Nobrand", 10000L, "aaaa.logoimage.src", employer);
+    company = new Company(1L, "A", "Food", "Nobrand", 10000L, "aaaa.logoimage.src", employer);
     recruitmentContent = new RecruitmentContent("koreanDetailedDescription",
         "vietnameseDetailedDescription");
     recruitment = new Recruitment("koreanTitle", "vietnameseTitle", "companySize",
@@ -70,7 +70,8 @@ public class applyServiceTest {
         "workDuration", "workDays", "workType", "workHours", "requestedCareer", "majorBusiness",
         "eligibilityCriteria", "preferredConditions", "employerName", "companyName", company,
         recruitmentContent);
-    resume = new Resume(1L,"홍길동", "123 street", "01012345678", "cooker", "good", "myIntroduction",employee);
+    resume = new Resume(1L, "홍길동", "123 street", "01012345678", "cooker", "good", "myIntroduction",
+        employee);
     apply = new Apply(1L, ApplyStatus.REVIEWING_APPLICATION.getKoreanName(), employee,
         recruitment);
     applicationForm = new ApplicationForm("홍길동", "123 street", "01012345678", "myMotivation",
@@ -122,7 +123,7 @@ public class applyServiceTest {
   }
 
   @Test
-  public void testSearchMyAppliedRecruitments(){
+  public void testSearchMyAppliedRecruitments() {
     //given
     List<Apply> applies = Stream.of(apply).toList();
     when(applyRepository.findByUser(employee)).thenReturn(Optional.of(applies));
@@ -132,12 +133,13 @@ public class applyServiceTest {
         Optional.ofNullable(company));
 
     //when
-    List<RecruitmentsOfApplierResponse> responses = applyService.searchMyAppliedRecruitments(employee);
+    List<RecruitmentsOfApplierResponse> responses = applyService.searchMyAppliedRecruitments(
+        employee);
 
     //then
     assertNotNull(responses);
-    assertEquals(apply.getId(),responses.get(0).applyId());
-    assertEquals(company.getLogoImage(),responses.get(0).image());
+    assertEquals(apply.getId(), responses.get(0).applyId());
+    assertEquals(company.getLogoImage(), responses.get(0).image());
   }
 
 }
