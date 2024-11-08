@@ -1,8 +1,11 @@
 package team18.team18_be.userInformation.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.net.URI;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,9 +53,17 @@ public class UserInformationController {
   }
 
   @Operation(summary = "회사등록")
-  @PostMapping("/company")
-  public ResponseEntity<Void> createCompany(@RequestPart CompanyRequest companyRequest,
+  @PostMapping(value = "/company", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<Void> createCompany(@RequestPart("companyRequest") String companyRequestJson,
       @RequestPart MultipartFile logoImage, @LoginUser User user) {
+    System.out.println(companyRequestJson);
+    ObjectMapper objectMapper = new ObjectMapper();
+    CompanyRequest companyRequest = null;
+    try {
+      companyRequest = objectMapper.readValue(companyRequestJson, CompanyRequest.class);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
     Long companyId = userInformationService.createCompany(companyRequest, logoImage, user);
     URI location = createURI(companyId);
     return ResponseEntity.created(location).build();
