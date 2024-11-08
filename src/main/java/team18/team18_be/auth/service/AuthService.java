@@ -128,7 +128,7 @@ public class AuthService {
             () -> new NoSuchElementException(ErrorMessage.NOT_FOUND_USER.getErrorMessage()));
     String userType = user.getType();
     String accessToken = getAccessToken(user);
-    return new LoginResponse(accessToken, userType, profileImage);
+    return new LoginResponse(accessToken, userType, profileImage, user.getName());
   }
 
   private String getAccessToken(User user) {
