@@ -80,18 +80,16 @@ jobs:
         run: |
           RUNNER_IP=$(cat RUNNER_IP.txt)
           
-          # 기존의 source-ranges 값을 가져옵니다.
+          # 기존의 source-ranges 값 가져오기
           EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
+
+          # 세미콜론 제거
+          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/;*$//')
           
-          # GitHub Actions IP가 이미 있다면 추가하지 않도록 방지
-          if [[ "$EXCLUDE_IPS" != *"$RUNNER_IP/32"* ]]; then
-            # GitHub Actions IP를 추가
-            gcloud compute firewall-rules update default-allow-ssh \
-              --allow tcp:22 \
-              --source-ranges="${EXCLUDE_IPS},${RUNNER_IP}/32"
-          else
-            echo "GitHub Actions IP already exists in the source-ranges"
-          fi
+          # GitHub Actions IP를 추가
+          gcloud compute firewall-rules update default-allow-ssh \
+            --allow tcp:22 \
+            --source-ranges="${EXCLUDE_IPS},${RUNNER_IP}/32"
 
       - name: Configure SSH private key
         run: |
