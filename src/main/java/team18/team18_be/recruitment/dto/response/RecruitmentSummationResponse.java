@@ -6,7 +6,7 @@ public record RecruitmentSummationResponse(
     String koreanTitle,
     String vietnameseTitle,
     String companyName,
-    String salary,
+    Long salary,
     String area
 ) {
 

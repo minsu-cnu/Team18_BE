@@ -24,7 +24,7 @@ public class Recruitment {
   private String vietnameseTitle;
   private String companySize;
   private String area;
-  private String salary;
+  private Long salary;
   private String workDuration;
   private String workDays;
   private String workType;
@@ -45,7 +45,7 @@ public class Recruitment {
   private RecruitmentContent recruitmentContent;
 
   public Recruitment(String koreanTitle, String vietnameseTitle, String companySize, String area,
-      String salary, String workDuration, String workDays, String workType, String workHours,
+      Long salary, String workDuration, String workDays, String workType, String workHours,
       String requestedCareer,
       String majorBusiness, String eligibilityCriteria, String preferredConditions,
       String employerName, String companyName, Company company,

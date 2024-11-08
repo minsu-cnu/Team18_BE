@@ -4,7 +4,7 @@ public record RecruitmentRequest(
     String title,
     String companySize,
     String area,
-    String salary,
+    Long salary,
     String workDuration,
     String workDays,
     String workType,
