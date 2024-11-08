@@ -6,7 +6,7 @@ public record RecruitmentResponseForCompany(
     String koreanTitle,
     String vietnameseTitle,
     String companyName,
-    String salary,
+    Long salary,
     String area,
     Boolean hiring
 ) {
