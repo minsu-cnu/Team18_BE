@@ -40,6 +40,13 @@ public class Apply {
     this.recruitment = recruitment;
   }
 
+  public Apply(Long id, String status, User user, Recruitment recruitment) {
+    this.id = id;
+    this.status = status;
+    this.user = user;
+    this.recruitment = recruitment;
+  }
+
   public Long getId() {
     return id;
   }
