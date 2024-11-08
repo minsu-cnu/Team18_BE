@@ -36,6 +36,17 @@ public class Company {
   public Company() {
   }
 
+  public Company(Long id, String name, String industryOccupation, String brand, Long revenuePerYear,
+      String logoImage, User user) {
+    this.id = id;
+    this.name = name;
+    this.industryOccupation = industryOccupation;
+    this.brand = brand;
+    this.revenuePerYear = revenuePerYear;
+    this.logoImage = logoImage;
+    this.user = user;
+  }
+
   public Company(String name, String industryOccupation, String brand,
       Long revenuePerYear, String logoImage, User user) {
     this.name = name;

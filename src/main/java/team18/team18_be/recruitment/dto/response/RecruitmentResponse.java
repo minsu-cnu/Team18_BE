@@ -5,7 +5,7 @@ public record RecruitmentResponse(
     String vietnameseTitle,
     String companySize,
     String area,
-    String salary,
+    Long salary,
     String workDuration,
     String workDays,
     String workType,

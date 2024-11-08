@@ -46,9 +46,9 @@ public class ApplyController {
 
   @Operation(summary = "특정 지원서 조회")
   @GetMapping("/form/{applyId}")
-  public ResponseEntity<ApplicationFormResponse> findApplication(@PathVariable Long applyId,
+  public ResponseEntity<ApplicationFormResponse> findApplicationForm(@PathVariable Long applyId,
       @LoginUser User user) {
-    ApplicationFormResponse applicationFormResponse = applyService.findApplication(applyId);
+    ApplicationFormResponse applicationFormResponse = applyService.findApplicationForm(applyId);
     return ResponseEntity.ok(applicationFormResponse);
   }
 

@@ -35,7 +35,7 @@ public class ResumeService {
     resumeRepository.save(resumeMapper.toResume(resumeRequest, user));
   }
 
-  public ResumeResponse findResumeByEmployeeId(User user) {
+  public ResumeResponse findResumeByEmployee(User user) {
     return resumeMapper.toResumeResponse(resumeRepository.findByUser(user));
   }
 
@@ -43,9 +43,9 @@ public class ResumeService {
     Resume resume = resumeRepository.findById(resumeId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
     Apply apply = applyRepository.findById(applyId)
+    ApplicationForm applicationForm = applicationFormRepository.findByApply(apply)
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
-    ApplicationForm applicationForm = applicationFormRepository.findByApply(apply);
-    return resumeMapper.toResumeAndApplyResponse(resume, applicationForm.getMotivation());
+    return resumeMapper.toResumeAndApplyResponse(resume,applicationForm.getMotivation());
   }
 
 }
