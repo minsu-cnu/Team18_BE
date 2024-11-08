@@ -66,7 +66,7 @@ public class applyServiceTest {
     recruitmentContent = new RecruitmentContent("koreanDetailedDescription",
         "vietnameseDetailedDescription");
     recruitment = new Recruitment("koreanTitle", "vietnameseTitle", "companySize",
-        "area", "salary",
+        "area", 100000000L,
         "workDuration", "workDays", "workType", "workHours", "requestedCareer", "majorBusiness",
         "eligibilityCriteria", "preferredConditions", "employerName", "companyName", company,
         recruitmentContent);
