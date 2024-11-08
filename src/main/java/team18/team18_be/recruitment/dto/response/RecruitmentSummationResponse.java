@@ -9,4 +9,5 @@ public record RecruitmentSummationResponse(
     Long salary,
     String area
 ) {
+
 }

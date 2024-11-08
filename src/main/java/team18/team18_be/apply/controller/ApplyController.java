@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.apply.dto.request.ApplicationFormRequest;
+import team18.team18_be.apply.dto.response.ApplicationFormResponse;
 import team18.team18_be.apply.dto.response.ApplierPerRecruitmentResponse;
 import team18.team18_be.apply.dto.response.MandatoryResponse;
 import team18.team18_be.apply.dto.response.RecruitmentsOfApplierResponse;
 import team18.team18_be.apply.service.ApplyService;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
+
 
 @RestController
 @RequestMapping("/api/application")
@@ -40,6 +42,14 @@ public class ApplyController {
     URI location = URI.create("/api/application/" + applicationId);
 
     return ResponseEntity.created(location).build();
+  }
+
+  @Operation(summary = "특정 지원서 조회")
+  @GetMapping("/form/{applyId}")
+  public ResponseEntity<ApplicationFormResponse> findApplicationForm(@PathVariable Long applyId,
+      @LoginUser User user) {
+    ApplicationFormResponse applicationFormResponse = applyService.findApplicationForm(applyId);
+    return ResponseEntity.ok(applicationFormResponse);
   }
 
   @Operation(summary = "구인글에 지원한 지원자 확인", description = "고용주가 자신이 올린 구인글에 누가 지원했는지 보여준다.")
