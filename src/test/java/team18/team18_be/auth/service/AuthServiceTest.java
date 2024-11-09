@@ -49,7 +49,8 @@ class AuthServiceTest {
   static final String APPLICATION_TEST_PROPERTIES = "application-test.properties";
   static final String OAUTH_GOOGLE_CLIENT_ID = "oauth.google.client-id";
   static final String OAUTH_GOOGLE_CLIENT_SECRET = "oauth.google.client-secret";
-  static final String OAUTH_GOOGLE_REDIRECT_URI = "oauth.google.redirect-uri";
+  static final String OAUTH_GOOGLE_REDIRECT_URI_LOCAL = "oauth.google.redirect-uri-local";
+  static final String OAUTH_GOOGLE_REDIRECT_URI_PROD = "oauth.google.redirect-uri-prod";
   static final String OAUTH_GOOGLE_GRANT_TYPE = "oauth.google.grant-type";
   static final String JWT_SECRET = "jwt.secret";
   static final String SECRET_KEY = "SECRET_KEY";
@@ -60,6 +61,8 @@ class AuthServiceTest {
   static final Long USER_ID = 1L;
   static final String AUTHORIZATION_CODE = "authorization_code";
   static final String OAUTH_ACCESS_TOKEN = "access_token";
+
+  static final String REFERER = "referer";
 
   @InjectMocks
   AuthService authService;
@@ -94,14 +97,15 @@ class AuthServiceTest {
 
     String clientId = properties.getProperty(OAUTH_GOOGLE_CLIENT_ID);
     String clientSecert = properties.getProperty(OAUTH_GOOGLE_CLIENT_SECRET);
-    String redirectUri = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI);
+    String redirectUriLocal = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI_LOCAL);
+    String redirectUriProd = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI_PROD);
     String grantType = properties.getProperty(OAUTH_GOOGLE_GRANT_TYPE);
     String secretKey = properties.getProperty(JWT_SECRET);
 
     ReflectionTestUtils.setField(authService, SECRET_KEY, secretKey);
 
     ReflectionTestUtils.setField(authService, GOOGLE_PROPERTY,
-        new GoogleProperty(clientId, clientSecert, redirectUri, grantType));
+        new GoogleProperty(clientId, clientSecert, redirectUriLocal, redirectUriProd, grantType));
   }
 
   @BeforeEach
@@ -139,7 +143,7 @@ class AuthServiceTest {
     CodeRequest codeRequest = new CodeRequest(AUTHORIZATION_CODE);
 
     // when
-    OAuthJwtResponse response = authService.getOAuthToken(codeRequest, mockServerUri);
+    OAuthJwtResponse response = authService.getOAuthToken(codeRequest, mockServerUri, REFERER);
 
     // then
     assertThat(response.accessToken()).isEqualTo(OAUTH_ACCESS_TOKEN);
@@ -153,7 +157,7 @@ class AuthServiceTest {
     CodeRequest codeRequest = new CodeRequest(AUTHORIZATION_CODE);
 
     // when, then
-    assertThatThrownBy(() -> authService.getOAuthToken(codeRequest, mockUri)).isInstanceOf(
+    assertThatThrownBy(() -> authService.getOAuthToken(codeRequest, mockUri, REFERER)).isInstanceOf(
         OAuthLoginFailedException.class);
   }
 

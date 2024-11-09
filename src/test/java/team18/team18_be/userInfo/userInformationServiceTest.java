@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,11 +88,13 @@ public class userInformationServiceTest {
   @Test
   public void testFindCompany() {
     //given
-    when(companyRepository.findByUser(employer)).thenReturn(Optional.of(company));
+    List<Company> comapnys = new ArrayList<>();
+    comapnys.add(company);
+    when(companyRepository.findByUser(employer)).thenReturn(Optional.of(comapnys));
     //when
-    CompanyResponse companyResponse = userInformationService.findCompany(employer);
+    List<CompanyResponse> companyResponse = userInformationService.findCompany(employer);
     //then
-    assertEquals(company.getId(), companyResponse.CompanyId());
+    assertEquals(company.getId(), companyResponse.get(0).companyId());
   }
 
   @Test
