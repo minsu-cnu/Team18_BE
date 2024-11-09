@@ -46,7 +46,7 @@ public class ResumeService {
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
     ApplicationForm applicationForm = applicationFormRepository.findByApply(apply)
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
-    return resumeMapper.toResumeAndApplyResponse(resume,applicationForm.getMotivation());
+    return resumeMapper.toResumeAndApplyResponse(resume, applicationForm.getMotivation());
   }
 
 }

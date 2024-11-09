@@ -55,7 +55,8 @@ public class UserInformationController {
 
   @Operation(summary = "회사등록")
   @PostMapping(value = "/company", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Void> createCompany(@RequestPart("companyRequest") String companyRequestJson,
+  public ResponseEntity<Void> createCompany(
+      @RequestPart("companyRequest") String companyRequestJson,
       @RequestPart MultipartFile logoImage, @LoginUser User user) {
     System.out.println(companyRequestJson);
     ObjectMapper objectMapper = new ObjectMapper();
