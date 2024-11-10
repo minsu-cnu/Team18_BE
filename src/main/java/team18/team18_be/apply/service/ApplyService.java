@@ -2,7 +2,6 @@ package team18.team18_be.apply.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
@@ -21,8 +20,6 @@ import team18.team18_be.recruitment.repository.RecruitmentRepository;
 import team18.team18_be.resume.entity.Resume;
 import team18.team18_be.resume.repository.ResumeRepository;
 import team18.team18_be.userInformation.entity.Company;
-import team18.team18_be.userInformation.entity.ForeignerInformation;
-import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.repository.CompanyRepository;
 import team18.team18_be.userInformation.repository.ForeignerInformationRepository;
 import team18.team18_be.userInformation.repository.SignRepository;
@@ -42,14 +39,15 @@ public class ApplyService {
   public ApplyService(ApplicationFormRepository applicationFormRepository,
       ApplyRepository applyRepository, RecruitmentRepository recruitmentRepository,
       ResumeRepository resumeRepository, CompanyRepository companyRepository,
-      ForeignerInformationRepository foreignerInformationRepository,SignRepository signRepository) {
+      ForeignerInformationRepository foreignerInformationRepository,
+      SignRepository signRepository) {
     this.applicationFormRepository = applicationFormRepository;
     this.applyRepository = applyRepository;
     this.recruitmentRepository = recruitmentRepository;
     this.resumeRepository = resumeRepository;
     this.companyRepository = companyRepository;
     this.foreignerInformationRepository = foreignerInformationRepository;
-    this.signRepository=signRepository;
+    this.signRepository = signRepository;
   }
 
   public Long createApplicationForm(ApplicationFormRequest applicationFormRequest,
@@ -127,7 +125,7 @@ public class ApplyService {
     boolean signExistence = signRepository.findByUser(user).isPresent();
 
     MandatoryResponse mandatoryResponse = new MandatoryResponse(resumeExistence, visaExistence,
-        foreignerIdNumberExistence,signExistence);
+        foreignerIdNumberExistence, signExistence);
     return mandatoryResponse;
   }
 
