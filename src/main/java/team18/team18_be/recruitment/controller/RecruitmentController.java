@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import team18.team18_be.auth.entity.User;
 import team18.team18_be.config.resolver.LoginUser;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
+import team18.team18_be.recruitment.dto.response.RecruitmentAllResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponseForCompany;
 import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
@@ -46,7 +47,7 @@ public class RecruitmentController {
 
   @Operation(summary = "구인글 전체 조회 메서드")
   @GetMapping
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitments(
+  public ResponseEntity<RecruitmentAllResponse> getAllRecruitments(
       @RequestParam int page
   ) {
     int fixedPageSize = 4;
@@ -83,7 +84,7 @@ public class RecruitmentController {
 
   @Operation(summary = "최근 올라온 구인글 순서대로 정렬")
   @GetMapping("/latestRegistration")
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsLatestRegistration(
+  public ResponseEntity<RecruitmentAllResponse> getAllRecruitmentsLatestRegistration(
       @RequestParam int page
   ) {
     int fixedPageSize = 4;
@@ -93,7 +94,7 @@ public class RecruitmentController {
 
   @Operation(summary = "급여 높은 순서대로 정리해서 전체 구인글 반환하는 메서드")
   @GetMapping("/salary")
-  public ResponseEntity<List<RecruitmentSummationResponse>> getAllRecruitmentsSalary(
+  public ResponseEntity<RecruitmentAllResponse> getAllRecruitmentsSalary(
       @RequestParam int page
   ) {
     int fixedPageSize = 4;

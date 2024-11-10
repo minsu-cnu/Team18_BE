@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team18.team18_be.config.infrastructure.OpenAiService;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
+import team18.team18_be.recruitment.dto.response.PageDto;
+import team18.team18_be.recruitment.dto.response.RecruitmentAllResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponseForCompany;
 import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
@@ -58,9 +60,10 @@ public class RecruitmentService {
 
   }
 
-  public List<RecruitmentSummationResponse> getAllRecruitment(Pageable pageable) {
+  public RecruitmentAllResponse getAllRecruitment(Pageable pageable) {
     Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrue(pageable);
-    return recruitments.stream()
+    List<RecruitmentSummationResponse> recruitmentSummationResponseList =
+        recruitments.stream()
         .map(recruitment -> new RecruitmentSummationResponse(
             recruitment.getRecruitmentId(),
             recruitment.getCompany().getLogoImage(),
@@ -71,38 +74,46 @@ public class RecruitmentService {
             recruitment.getArea()
         ))
         .collect(Collectors.toList());
+    int totalPage = recruitments.getTotalPages();
+    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
   }
 
-  public List<RecruitmentSummationResponse> getAllRecruitmentAndSortBySalary(Pageable pageable) {
+  public RecruitmentAllResponse getAllRecruitmentAndSortBySalary(Pageable pageable) {
     Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderBySalaryDesc(
         pageable);
-    return recruitments.stream()
-        .map(recruitment -> new RecruitmentSummationResponse(
-            recruitment.getRecruitmentId(),
-            recruitment.getCompany().getLogoImage(),
-            recruitment.getKoreanTitle(),
-            recruitment.getVietnameseTitle(),
-            recruitment.getCompanyName(),
-            recruitment.getSalary(),
-            recruitment.getArea()
-        ))
-        .collect(Collectors.toList());
+    List<RecruitmentSummationResponse> recruitmentSummationResponseList =
+        recruitments.stream()
+            .map(recruitment -> new RecruitmentSummationResponse(
+                recruitment.getRecruitmentId(),
+                recruitment.getCompany().getLogoImage(),
+                recruitment.getKoreanTitle(),
+                recruitment.getVietnameseTitle(),
+                recruitment.getCompanyName(),
+                recruitment.getSalary(),
+                recruitment.getArea()
+            ))
+            .collect(Collectors.toList());
+    int totalPage = recruitments.getTotalPages();
+    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
   }
 
-  public List<RecruitmentSummationResponse> getAllRecruitmentAndSortByDate(Pageable pageable) {
+  public RecruitmentAllResponse getAllRecruitmentAndSortByDate(Pageable pageable) {
     Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrueOrderByUploadDateDesc(
         pageable);
-    return recruitments.stream()
-        .map(recruitment -> new RecruitmentSummationResponse(
-            recruitment.getRecruitmentId(),
-            recruitment.getCompany().getLogoImage(),
-            recruitment.getKoreanTitle(),
-            recruitment.getVietnameseTitle(),
-            recruitment.getCompanyName(),
-            recruitment.getSalary(),
-            recruitment.getArea()
-        ))
-        .collect(Collectors.toList());
+    List<RecruitmentSummationResponse> recruitmentSummationResponseList =
+        recruitments.stream()
+            .map(recruitment -> new RecruitmentSummationResponse(
+                recruitment.getRecruitmentId(),
+                recruitment.getCompany().getLogoImage(),
+                recruitment.getKoreanTitle(),
+                recruitment.getVietnameseTitle(),
+                recruitment.getCompanyName(),
+                recruitment.getSalary(),
+                recruitment.getArea()
+            ))
+            .collect(Collectors.toList());
+    int totalPage = recruitments.getTotalPages();
+    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
   }
 
   public RecruitmentResponse getRecruitmentResponseByRecruitmentId(Long userId) {
