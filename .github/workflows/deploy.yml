@@ -21,6 +21,9 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
+      - name : Override APPLICATION PROPERTIES
+        run : echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+      
       - name: Configure Production Properties
         run: |
           touch ./src/main/resources/application-prod.properties
@@ -47,7 +50,7 @@ jobs:
         with:
           name: team18-be-jar
           path: build/libs/team18-be-0.0.1-SNAPSHOT.jar
-
+          
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -58,21 +61,62 @@ jobs:
         with:
           name: team18-be-jar
 
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Get GitHub Actions Runner IP
+        id: get_ip
+        run: |
+          echo $(curl -s https://api64.ipify.org) > RUNNER_IP.txt
+
+      - name: Add GitHub Actions IP to GCP Firewall
+        run: |
+          RUNNER_IP=$(cat RUNNER_IP.txt)
+          
+          # 기존의 source-ranges 값 가져오기
+          EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
+
+          # 세미콜론 제거
+          EXCLUDE_IPS=$(echo $EXCLUDE_IPS | sed 's/;/,/g')
+          
+          # GitHub Actions IP를 추가
+          gcloud compute firewall-rules update default-allow-ssh \
+            --allow tcp:22 \
+            --source-ranges="${EXCLUDE_IPS},${RUNNER_IP}/32"
+
+      - name: Configure SSH private key
+        run: |
+          touch ./key-hirehigher
+          echo "${{ secrets.HIREHIGHER_GCP_SSH_KEY }}" > ./key-hirehigher
+          chmod 600 ./key-hirehigher
+
+      - name: Add GCP VM to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.GCP_VM_IP }}" >> ~/.ssh/known_hosts
+
       - name: Deploy to GCP
         run: |
-          # 필요한 패키지 설치
-          sudo apt-get update
-          sudo apt-get install -y google-cloud-cli
+          # scp로 VM에 jar 파일 전송
+          scp -o StrictHostKeyChecking=no -i ./key-hirehigher ./team18-be-0.0.1-SNAPSHOT.jar hirehigher@${{ secrets.GCP_VM_IP }}:/home/hirehigher/repository
 
-          # GCP 인증
-          echo "${{ secrets.HIREHIGHER_GCP_KEY }}" | base64 --decode > ${HOME}/gcp-key.json
-          gcloud auth activate-service-account --key-file=${HOME}/gcp-key.json
-
-          # GCP 프로젝트 설정
-          gcloud config set project fleet-point-420405
-
-          # GCP VM 인스턴스에 JAR 파일 전송
-          gcloud compute scp ./build/libs/team18-be-0.0.1-SNAPSHOT.jar hirehigher-api:/home/hirehigher/repository --zone asia-northeast3-a
-
-          # GCP VM에서 배포 쉘 스크립트 실행
-          gcloud compute ssh hirehigher-api --zone asia-northeast3-a --command 'bash /home/hirehigher/repository/deploy.sh'
+      - name: Remove GitHub Actions IP from GCP Firewall
+        run: |
+          RUNNER_IP=$(cat RUNNER_IP.txt)
+          
+          # 기존 firewall 규칙 가져오기
+          EXCLUDE_IPS=$(gcloud compute firewall-rules describe default-allow-ssh --format="get(sourceRanges)" || echo "")
+          
+          # GitHub Actions IP를 제외한 source ranges 설정
+          NEW_SOURCE_RANGES=$(echo $EXCLUDE_IPS | sed "s/$RUNNER_IP\/32//g" | sed 's/;/,/g')
+          
+          # 업데이트된 firewall 규칙 적용
+          gcloud compute firewall-rules update default-allow-ssh \
+            --source-ranges=$NEW_SOURCE_RANGES

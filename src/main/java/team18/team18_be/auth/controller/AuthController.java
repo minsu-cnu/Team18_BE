@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -47,9 +48,12 @@ public class AuthController {
       @ApiResponse(responseCode = "500", description = "서버 내부 에러", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class)))
   })
   @PostMapping("/oauth")
-  public ResponseEntity<UserTypeResponse> login(@RequestBody CodeRequest codeRequest) {
+  public ResponseEntity<UserTypeResponse> login(@RequestBody CodeRequest codeRequest,
+      HttpServletRequest request) {
+    String referer = request.getHeader("Referer");
+
     OAuthJwtResponse oAuthJwtResponse = authService.getOAuthToken(codeRequest,
-        GOOGLE_TOKEN_URI);
+        GOOGLE_TOKEN_URI, referer);
     LoginResponse loginResponse = authService.registerOAuth(oAuthJwtResponse,
         GOOGLE_USER_INFO_URI);
 
@@ -57,7 +61,7 @@ public class AuthController {
     headers.setBearerAuth(loginResponse.accessToken());
 
     UserTypeResponse userTypeResponse = new UserTypeResponse(loginResponse.type(),
-        loginResponse.profileImage());
+        loginResponse.profileImage(), loginResponse.name());
 
     return new ResponseEntity<>(userTypeResponse, headers, HttpStatus.OK);
   }

@@ -44,14 +44,13 @@ import team18.team18_be.exception.OAuthLoginFailedException;
 @SuppressWarnings("NonAsciiCharacters")
 class AuthServiceTest {
 
-  static final String NAME = "name";
-  static final String EMAIL = "email";
   static final String PICTURE = "profile_image";
   static final String USER_INFO_URI = "/userinfo/v2/me";
   static final String APPLICATION_TEST_PROPERTIES = "application-test.properties";
   static final String OAUTH_GOOGLE_CLIENT_ID = "oauth.google.client-id";
   static final String OAUTH_GOOGLE_CLIENT_SECRET = "oauth.google.client-secret";
-  static final String OAUTH_GOOGLE_REDIRECT_URI = "oauth.google.redirect-uri";
+  static final String OAUTH_GOOGLE_REDIRECT_URI_LOCAL = "oauth.google.redirect-uri-local";
+  static final String OAUTH_GOOGLE_REDIRECT_URI_PROD = "oauth.google.redirect-uri-prod";
   static final String OAUTH_GOOGLE_GRANT_TYPE = "oauth.google.grant-type";
   static final String JWT_SECRET = "jwt.secret";
   static final String SECRET_KEY = "SECRET_KEY";
@@ -62,6 +61,8 @@ class AuthServiceTest {
   static final Long USER_ID = 1L;
   static final String AUTHORIZATION_CODE = "authorization_code";
   static final String OAUTH_ACCESS_TOKEN = "access_token";
+
+  static final String REFERER = "referer";
 
   @InjectMocks
   AuthService authService;
@@ -75,8 +76,10 @@ class AuthServiceTest {
 
   static Stream<Arguments> 파라미터_구글_토큰_기반_회원가입_및_로그인() {
     return Stream.of(
-        Arguments.of("신규 유저일 때", new User(NAME, EMAIL, UserType.FIRST.getUserType()), true),
-        Arguments.of("기존 유저일 때", new User(NAME, EMAIL, UserType.EMPLOYER.getUserType()), false)
+        Arguments.of("신규 유저일 때", new User(USER_NAME, USER_EMAIL, UserType.FIRST.getUserType()),
+            true),
+        Arguments.of("기존 유저일 때", new User(USER_NAME, USER_EMAIL, UserType.EMPLOYER.getUserType()),
+            false)
     );
   }
 
@@ -94,14 +97,15 @@ class AuthServiceTest {
 
     String clientId = properties.getProperty(OAUTH_GOOGLE_CLIENT_ID);
     String clientSecert = properties.getProperty(OAUTH_GOOGLE_CLIENT_SECRET);
-    String redirectUri = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI);
+    String redirectUriLocal = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI_LOCAL);
+    String redirectUriProd = properties.getProperty(OAUTH_GOOGLE_REDIRECT_URI_PROD);
     String grantType = properties.getProperty(OAUTH_GOOGLE_GRANT_TYPE);
     String secretKey = properties.getProperty(JWT_SECRET);
 
     ReflectionTestUtils.setField(authService, SECRET_KEY, secretKey);
 
     ReflectionTestUtils.setField(authService, GOOGLE_PROPERTY,
-        new GoogleProperty(clientId, clientSecert, redirectUri, grantType));
+        new GoogleProperty(clientId, clientSecert, redirectUriLocal, redirectUriProd, grantType));
   }
 
   @BeforeEach
@@ -139,7 +143,7 @@ class AuthServiceTest {
     CodeRequest codeRequest = new CodeRequest(AUTHORIZATION_CODE);
 
     // when
-    OAuthJwtResponse response = authService.getOAuthToken(codeRequest, mockServerUri);
+    OAuthJwtResponse response = authService.getOAuthToken(codeRequest, mockServerUri, REFERER);
 
     // then
     assertThat(response.accessToken()).isEqualTo(OAUTH_ACCESS_TOKEN);
@@ -153,7 +157,7 @@ class AuthServiceTest {
     CodeRequest codeRequest = new CodeRequest(AUTHORIZATION_CODE);
 
     // when, then
-    assertThatThrownBy(() -> authService.getOAuthToken(codeRequest, mockUri)).isInstanceOf(
+    assertThatThrownBy(() -> authService.getOAuthToken(codeRequest, mockUri, REFERER)).isInstanceOf(
         OAuthLoginFailedException.class);
   }
 
@@ -162,11 +166,11 @@ class AuthServiceTest {
   void 구글_토큰_기반_회원가입_및_로그인(String testName, User user, boolean isNewUser)
       throws JsonProcessingException {
     // given
-    OAuthUserInfo oAuthUserInfo = new OAuthUserInfo(NAME, EMAIL, PICTURE);
+    OAuthUserInfo oAuthUserInfo = new OAuthUserInfo(USER_NAME, USER_EMAIL, PICTURE);
     mockWebServer.enqueue(
         new MockResponse().setBody(objectMapper.writeValueAsString(oAuthUserInfo)));
-    given(authRepository.existsByEmail(EMAIL)).willReturn(!isNewUser);
-    given(authRepository.findByEmail(EMAIL)).willReturn(Optional.of(user));
+    given(authRepository.existsByEmail(USER_EMAIL)).willReturn(!isNewUser);
+    given(authRepository.findByEmail(USER_EMAIL)).willReturn(Optional.of(user));
 
     String mockUri = mockWebServer.url(USER_INFO_URI).toString();
     OAuthJwtResponse oAuthJwtResponse = new OAuthJwtResponse(OAUTH_ACCESS_TOKEN);
@@ -181,6 +185,7 @@ class AuthServiceTest {
     SoftAssertions.assertSoftly(softly -> {
       assertThat(loginResponse.type()).isEqualTo(user.getType());
       assertThat(loginResponse.profileImage()).isEqualTo(PICTURE);
+      assertThat(loginResponse.name()).isEqualTo(USER_NAME);
       assertThat(loginResponse.accessToken()).isNotNull();
     });
   }

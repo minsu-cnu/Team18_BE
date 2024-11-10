@@ -1,7 +1,10 @@
 package team18.team18_be.userInformation.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,13 +59,19 @@ public class UserInformationService {
     return savedCompany.getId();
   }
 
-  public CompanyResponse findCompany(User user) {
-    Company company = companyRepository.findByUser(user);
+  public List<CompanyResponse> findCompany(User user) {
+    return companyRepository.findByUser(user).orElse(Collections.emptyList()).stream()
+        .map(this::createCompanyResponse)
+        .collect(Collectors.toList());
+  }
+
+  private CompanyResponse createCompanyResponse(Company company) {
     CompanyResponse companyResponse = new CompanyResponse(company.getId(), company.getName(),
         company.getIndustryOccupation(), company.getBrand(), company.getRevenuePerYear(),
         company.getLogoImage());
     return companyResponse;
   }
+
 
   public Long fillInVisa(VisaRequest visaRequest, User user) {
     LocalDate visaGenerateDate = LocalDate.parse(visaRequest.visaGenerateDate());
@@ -78,7 +87,8 @@ public class UserInformationService {
   public VisaResponse findVisa(Long userId) {
     User user = authRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당 유저가 없습니다."));
-    ForeignerInformation foreignerInformation = foreignerInformationRepository.findByUser(user);
+    ForeignerInformation foreignerInformation = foreignerInformationRepository.findByUser(user)
+        .orElseThrow(() -> new NoSuchElementException("해당 외국인 정보가 없습니다"));
     String visaGenerateDate = foreignerInformation.getVisaGenerateDate().toString();
     String visaExpiryDate = foreignerInformation.getVisaExpiryDate().toString();
     VisaResponse visaResponse = new VisaResponse(foreignerInformation.getForeignerIdNumber(),
@@ -98,7 +108,8 @@ public class UserInformationService {
   }
 
   public SignResponse findSign(User user) {
-    Sign sign = signRepository.findByUser(user);
+    Sign sign = signRepository.findByUser(user)
+        .orElseThrow(() -> new NoSuchElementException("해당 사인이 없습니다."));
     SignResponse signResponse = new SignResponse(sign.getImageUrl());
     return signResponse;
   }

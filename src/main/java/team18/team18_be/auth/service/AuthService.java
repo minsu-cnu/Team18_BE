@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.NoSuchElementException;
 import javax.crypto.SecretKey;
 import org.apache.logging.log4j.util.InternalException;
@@ -44,6 +43,7 @@ public class AuthService {
   public static final String AUTHORIZATION = "Authorization";
   public static final String BEARER = "Bearer ";
   public static final String ACCESS_TOKEN = "access_token";
+  public static final String LOCALHOST = "localhost";
   private final AuthRepository authRepository;
   private final GoogleProperty googleProperty;
   private final RestClient restClient = RestClient.builder().build();
@@ -56,8 +56,10 @@ public class AuthService {
     this.googleProperty = googleProperty;
   }
 
-  public OAuthJwtResponse getOAuthToken(CodeRequest codeRequest, String externalApiUri) {
-    LinkedMultiValueMap<String, String> requestBody = getRequestBody(codeRequest);
+  public OAuthJwtResponse getOAuthToken(CodeRequest codeRequest, String externalApiUri,
+      String referer) {
+    validateReferer(referer);
+    LinkedMultiValueMap<String, String> requestBody = getRequestBody(codeRequest, referer);
 
     ResponseEntity<String> response = restClient.post()
         .uri(URI.create(externalApiUri))
@@ -112,13 +114,20 @@ public class AuthService {
     authRepository.save(user.updateUserType(userTypeRequest.type()));
   }
 
-  private LinkedMultiValueMap<String, String> getRequestBody(CodeRequest codeRequest) {
+  private LinkedMultiValueMap<String, String> getRequestBody(CodeRequest codeRequest,
+      String referer) {
     LinkedMultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
     requestBody.add(AUTHORIZATION_CODE, codeRequest.code());
     requestBody.add(CLIENT_ID, googleProperty.clientId());
     requestBody.add(CLIENT_SECRET, googleProperty.clientSecret());
-    requestBody.add(REDIRECT_URI, googleProperty.redirectUri());
     requestBody.add(GRANT_TYPE, googleProperty.grantType());
+
+    if (referer.contains(LOCALHOST)) {
+      requestBody.add(REDIRECT_URI, googleProperty.redirectUriLocal());
+    } else {
+      requestBody.add(REDIRECT_URI, googleProperty.redirectUriProd());
+    }
+
     return requestBody;
   }
 
@@ -129,7 +138,7 @@ public class AuthService {
             () -> new NoSuchElementException(ErrorMessage.NOT_FOUND_USER.getErrorMessage()));
     String userType = user.getType();
     String accessToken = getAccessToken(user);
-    return new LoginResponse(accessToken, userType, profileImage);
+    return new LoginResponse(accessToken, userType, profileImage, user.getName());
   }
 
   private String getAccessToken(User user) {
@@ -137,8 +146,13 @@ public class AuthService {
     SecretKey key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .claim(USER_ID, user.getId())
-        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60L))
         .signWith(key)
         .compact();
+  }
+
+  private void validateReferer(String referer) {
+    if (referer == null) {
+      throw new IllegalCallerException(ErrorMessage.NOT_FOUND_REFERER_IN_HEADER.getErrorMessage());
+    }
   }
 }

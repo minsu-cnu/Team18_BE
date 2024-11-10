@@ -11,7 +11,7 @@ import team18.team18_be.userInformation.entity.Company;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-03T19:16:36+0900",
+    date = "2024-11-10T20:46:08+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.3 (Eclipse Adoptium)"
 )
 @Component
@@ -60,7 +60,7 @@ public class RecruitmentMapperImpl implements RecruitmentMapper {
         String vietnameseTitle = null;
         String companySize = null;
         String area = null;
-        String salary = null;
+        Long salary = null;
         String workDuration = null;
         String workDays = null;
         String workType = null;
