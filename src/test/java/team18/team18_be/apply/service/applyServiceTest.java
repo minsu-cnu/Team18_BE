@@ -81,7 +81,7 @@ public class applyServiceTest {
   @Test
   public void testCreateApplicationForm() {
     // Given
-    ApplicationFormRequest request = new ApplicationFormRequest("홍길동", "123 Street",
+    ApplicationFormRequest request = new ApplicationFormRequest("홍길동", "123 Street","010333333333",
         "my_motivation");
     Long recruitmentId = 1L;
 
