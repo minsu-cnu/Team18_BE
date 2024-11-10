@@ -1,7 +1,7 @@
 package team18.team18_be.resume.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
 import team18.team18_be.resume.service.ResumeService;
 
-@Api(tags = {"이력서 관련 Controller"})
+@Tag(name = "이력서 관련 Controller")
 @RestController
 @RequestMapping("/api/resumes")
 public class ResumeController {
@@ -28,7 +28,7 @@ public class ResumeController {
     this.resumeService = resumeService;
   }
 
-  @ApiOperation(value = "이력서 저장 메서드")
+  @Operation(summary = "이력서 저장 메서드")
   @PostMapping
   public ResponseEntity<Void> saveResume(
       @RequestBody ResumeRequest resumeRequest,
@@ -38,7 +38,7 @@ public class ResumeController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @ApiOperation(value = "구직자 별 이력서 조회 메서드")
+  @Operation(summary = "구직자 별 이력서 조회 메서드")
   @GetMapping
   public ResponseEntity<ResumeResponse> getResume(
       @LoginUser User user
@@ -46,7 +46,7 @@ public class ResumeController {
     return ResponseEntity.ok().body(resumeService.findResumeByEmployee(user));
   }
 
-  @ApiOperation(value = "이력서 id로 이력서 조회 메서드")
+  @Operation(summary = "이력서 id로 이력서 조회 메서드")
   @GetMapping("/{resumeId}/{applyId}")
   public ResponseEntity<ResumeAndApplyResponse> getResumeById(
       @PathVariable Long resumeId,
