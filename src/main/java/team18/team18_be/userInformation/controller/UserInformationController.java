@@ -58,6 +58,7 @@ public class UserInformationController {
   public ResponseEntity<Void> createCompany(
       @RequestPart("companyRequest") String companyRequestJson,
       @RequestPart MultipartFile logoImage, @LoginUser User user) {
+    System.out.println(companyRequestJson);
     ObjectMapper objectMapper = new ObjectMapper();
     CompanyRequest companyRequest = null;
     try {

@@ -2,7 +2,6 @@ package team18.team18_be.apply.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
@@ -22,10 +21,8 @@ import team18.team18_be.resume.entity.Resume;
 import team18.team18_be.resume.repository.ResumeRepository;
 import team18.team18_be.userInformation.entity.Company;
 import team18.team18_be.userInformation.entity.ForeignerInformation;
-import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.repository.CompanyRepository;
 import team18.team18_be.userInformation.repository.ForeignerInformationRepository;
-import team18.team18_be.userInformation.repository.SignRepository;
 
 @Service
 public class ApplyService {
@@ -36,20 +33,18 @@ public class ApplyService {
   private final ResumeRepository resumeRepository;
   private final CompanyRepository companyRepository;
   private final ForeignerInformationRepository foreignerInformationRepository;
-  private final SignRepository signRepository;
 
 
   public ApplyService(ApplicationFormRepository applicationFormRepository,
       ApplyRepository applyRepository, RecruitmentRepository recruitmentRepository,
       ResumeRepository resumeRepository, CompanyRepository companyRepository,
-      ForeignerInformationRepository foreignerInformationRepository,SignRepository signRepository) {
+      ForeignerInformationRepository foreignerInformationRepository) {
     this.applicationFormRepository = applicationFormRepository;
     this.applyRepository = applyRepository;
     this.recruitmentRepository = recruitmentRepository;
     this.resumeRepository = resumeRepository;
     this.companyRepository = companyRepository;
     this.foreignerInformationRepository = foreignerInformationRepository;
-    this.signRepository=signRepository;
   }
 
   public Long createApplicationForm(ApplicationFormRequest applicationFormRequest,
@@ -117,17 +112,14 @@ public class ApplyService {
   }
 
   public MandatoryResponse checkMandatory(User user) {
-    boolean visaExistence = foreignerInformationRepository.findByUser(user)
-        .map(info -> info.getVisaGenerateDate() != null)
-        .orElse(false);
-    boolean foreignerIdNumberExistence = foreignerInformationRepository.findByUser(user)
-        .map(info -> info.getForeignerIdNumber() != null)
-        .orElse(false);
-    boolean resumeExistence = resumeRepository.findByUser(user) != null;
-    boolean signExistence = signRepository.findByUser(user).isPresent();
-
+    ForeignerInformation foreignerInformation = foreignerInformationRepository.findByUser(user)
+        .orElseThrow(() -> new NoSuchElementException("해당 외국인 정보가 없습니다."));
+    Resume resume = resumeRepository.findByUser(user);
+    boolean visaExistence = checkNull(foreignerInformation.getForeignerIdNumber());
+    boolean resumeExistence = checkNull(foreignerInformation.getVisaGenerateDate());
+    boolean foreignerIdNumberExistence = checkNull(resume);
     MandatoryResponse mandatoryResponse = new MandatoryResponse(resumeExistence, visaExistence,
-        foreignerIdNumberExistence,signExistence);
+        foreignerIdNumberExistence);
     return mandatoryResponse;
   }
 
@@ -136,4 +128,9 @@ public class ApplyService {
         .orElseThrow(() -> new NoSuchElementException("해당되는 구인글이 없습니다."));
     return recruitment;
   }
+
+  private boolean checkNull(Object object) {
+    return object != null;
+  }
+
 }
