@@ -1,7 +1,6 @@
 package team18.team18_be.contract.controller;
 
 import com.itextpdf.text.DocumentException;
-import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ public class ContractController {
     this.contractService = contractService;
   }
 
-  @ApiOperation(value = "근로계약서 등록 메서드 - 고용주 등록")
   @PostMapping
   public ResponseEntity<Void> makeContract(@Valid @RequestBody ContractRequest request,
       @LoginUser User user) throws DocumentException, IOException {
@@ -37,7 +35,6 @@ public class ContractController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  @ApiOperation(value = "근로계약서 등록 메서드 - 근로자 서명 등록")
   @PostMapping("/employee")
   public ResponseEntity<Void> fillInEmployeeSign(@Valid @RequestBody ContractRequest request,
       @LoginUser User user) throws IOException, DocumentException {
@@ -45,19 +42,16 @@ public class ContractController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  @ApiOperation(value = "근로계약서 id별 pdf url 반환 메서드")
   @GetMapping("/{applyId}/download")
   public ResponseEntity<ContractFileResponse> downloadContract(@PathVariable("applyId") Long id) {
     return ResponseEntity.ok(contractService.getContractPdfUrl(id));
   }
 
-  @ApiOperation(value = "근로계약서 id별 image url 반환 메서드")
   @GetMapping("/{applyId}/preview")
   public ResponseEntity<ContractFileResponse> previewContract(@PathVariable("applyId") Long id) {
     return ResponseEntity.ok(contractService.getContractImageUrl(id));
   }
 
-  @ApiOperation(value = "근로계약서 id별 근로계약서 정보 반환 메서드")
   @GetMapping("/{applyId}")
   public ResponseEntity<ContractResponse> getContract(@PathVariable("applyId") Long id) {
     return ResponseEntity.ok(contractService.getContract(id));

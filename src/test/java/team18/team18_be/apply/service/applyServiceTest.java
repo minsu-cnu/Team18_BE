@@ -81,8 +81,8 @@ public class applyServiceTest {
   @Test
   public void testCreateApplicationForm() {
     // Given
-    ApplicationFormRequest request = new ApplicationFormRequest("홍길동", "123 Street","010333333333",
-        "my_motivation");
+    ApplicationFormRequest request = new ApplicationFormRequest("홍길동", "123 Street",
+        "01012345678", "my_motivation");
     Long recruitmentId = 1L;
 
     when(applyRepository.save(any(Apply.class))).thenReturn(
