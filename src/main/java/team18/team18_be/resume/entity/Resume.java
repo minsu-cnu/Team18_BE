@@ -1,5 +1,6 @@
 package team18.team18_be.resume.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class Resume {
   private String career;
   private String korean;
   @Lob
+  @Column(columnDefinition = "TEXT")
   private String selfIntroduction;
 
   @ManyToOne
