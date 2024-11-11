@@ -21,7 +21,6 @@ import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 import team18.team18_be.recruitment.dto.response.RecruitmentAllResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponse;
 import team18.team18_be.recruitment.dto.response.RecruitmentResponseForCompany;
-import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
 import team18.team18_be.recruitment.service.RecruitmentService;
 
 @Tag(name = "구인글 관련 Controller")

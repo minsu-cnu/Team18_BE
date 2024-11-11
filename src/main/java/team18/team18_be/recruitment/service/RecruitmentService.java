@@ -41,7 +41,7 @@ public class RecruitmentService {
     this.recruitmentMapper = recruitmentMapper;
   }
 
-  public void saveRecruitment(RecruitmentRequest recruitmentRequest)
+  public Long saveRecruitment(RecruitmentRequest recruitmentRequest)
       throws JsonProcessingException {
     String koreanTitle = recruitmentRequest.title();
     String vietnameseTitle = openAiService.translateKoreanToVietnamese(koreanTitle);
@@ -51,12 +51,12 @@ public class RecruitmentService {
         koreanDetailedDescription);
     RecruitmentContent recruitmentContent = recruitmentContentRepository.save(
         new RecruitmentContent(koreanDetailedDescription, vietnameseDetailedDescription));
-    recruitmentRepository.save(
+   return recruitmentRepository.save(
         recruitmentMapper.toRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
             recruitmentContent, companyRepository.findById(recruitmentRequest.companyId())
                 .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")), true,
             new Date()
-        ));
+        )).getRecruitmentId();
 
   }
 
