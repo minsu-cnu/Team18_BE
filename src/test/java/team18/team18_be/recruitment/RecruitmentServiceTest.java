@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import team18.team18_be.auth.entity.User;
 import team18.team18_be.auth.repository.AuthRepository;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 import team18.team18_be.recruitment.dto.response.RecruitmentAllResponse;
-import team18.team18_be.recruitment.dto.response.RecruitmentSummationResponse;
 import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.repository.RecruitmentRepository;
 import team18.team18_be.recruitment.service.RecruitmentService;
@@ -34,7 +32,6 @@ public class RecruitmentServiceTest {
   public static Long firstRecruitmentId;
   public static Long secondRecruitmentId;
   public static Long thirdRecruitmentId;
-
 
 
   @Autowired
@@ -83,7 +80,7 @@ public class RecruitmentServiceTest {
   @Test
   @Transactional
   @DisplayName("구인글 전체조회")
-  public void findAllRecruitmentTest(){
+  public void findAllRecruitmentTest() {
     Pageable pageable = PageRequest.of(0, 5);
 
     RecruitmentAllResponse recruitmentAllResponse = recruitmentService.getAllRecruitment(
@@ -100,9 +97,12 @@ public class RecruitmentServiceTest {
     RecruitmentAllResponse recruitmentAllResponse = recruitmentService.getAllRecruitmentAndSortBySalary(
         pageable);
 
-    assertThat(recruitmentAllResponse.content().get(0).recruitmentId()).isEqualTo(thirdRecruitmentId);
-    assertThat(recruitmentAllResponse.content().get(1).recruitmentId()).isEqualTo(secondRecruitmentId);
-    assertThat(recruitmentAllResponse.content().get(2).recruitmentId()).isEqualTo(firstRecruitmentId);
+    assertThat(recruitmentAllResponse.content().get(0).recruitmentId()).isEqualTo(
+        thirdRecruitmentId);
+    assertThat(recruitmentAllResponse.content().get(1).recruitmentId()).isEqualTo(
+        secondRecruitmentId);
+    assertThat(recruitmentAllResponse.content().get(2).recruitmentId()).isEqualTo(
+        firstRecruitmentId);
   }
 
 }
