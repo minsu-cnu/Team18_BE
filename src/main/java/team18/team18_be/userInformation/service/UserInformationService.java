@@ -1,6 +1,5 @@
 package team18.team18_be.userInformation.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -25,9 +24,7 @@ import team18.team18_be.userInformation.entity.Sign;
 import team18.team18_be.userInformation.repository.CompanyRepository;
 import team18.team18_be.userInformation.repository.ForeignerInformationRepository;
 import team18.team18_be.userInformation.repository.SignRepository;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 @Service
 public class UserInformationService {
 
@@ -53,16 +50,16 @@ public class UserInformationService {
   }
 
   public Long createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
-    byte[] imageFile =null;
+    byte[] imageFile = null;
     String storedFileName = null;
 
-    if (logoImage.isEmpty()){
-      storedFileName=defaultLogoUrl;
-    }else {
+    if (logoImage.isEmpty()) {
+      storedFileName = defaultLogoUrl;
+    } else {
       imageFile = fileUtil.safelyGetBytes(logoImage)
           .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
       storedFileName = gcsUploader.upload(imageFile, "companyLogo",
-              user.getId().toString()+"Real"+ logoImage.getOriginalFilename())
+              user.getId().toString() + "Real" + logoImage.getOriginalFilename())
           .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
     }
     Company company = new Company(companyRequest.name(), companyRequest.industryOccupation(),
