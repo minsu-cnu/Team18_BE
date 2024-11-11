@@ -45,7 +45,7 @@ public class RecruitmentController {
   }
 
   @Operation(summary = "구인글 전체 조회 메서드")
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<RecruitmentAllResponse> getAllRecruitments(
       @RequestParam int page
   ) {
