@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team18.team18_be.auth.entity.User;
@@ -33,7 +34,8 @@ public class UserInformationService {
   private final AuthRepository authRepository;
   private final GcsUploader gcsUploader;
   private final FileUtil fileUtil;
-
+  @Value("${company.default-logo-url}")
+  private String defaultLogoUrl;
 
   public UserInformationService(ForeignerInformationRepository foreignerInformationRepository,
       CompanyRepository companyRepository, SignRepository signRepository,
@@ -48,11 +50,18 @@ public class UserInformationService {
   }
 
   public Long createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
-    byte[] imageFile = fileUtil.safelyGetBytes(logoImage)
-        .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
-    String storedFileName = gcsUploader.upload(imageFile, "companyLogo",
-            user.getId().toString() + logoImage.getOriginalFilename())
-        .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
+    byte[] imageFile = null;
+    String storedFileName = null;
+
+    if (logoImage.isEmpty()) {
+      storedFileName = defaultLogoUrl;
+    } else {
+      imageFile = fileUtil.safelyGetBytes(logoImage)
+          .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
+      storedFileName = gcsUploader.upload(imageFile, "companyLogo",
+              user.getId().toString() + "Real" + logoImage.getOriginalFilename())
+          .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
+    }
     Company company = new Company(companyRequest.name(), companyRequest.industryOccupation(),
         companyRequest.brand(), companyRequest.revenuePerYear(), storedFileName, user);
     Company savedCompany = companyRepository.save(company);
@@ -71,7 +80,6 @@ public class UserInformationService {
         company.getLogoImage());
     return companyResponse;
   }
-
 
   public Long fillInVisa(VisaRequest visaRequest, User user) {
     LocalDate visaGenerateDate = LocalDate.parse(visaRequest.visaGenerateDate());
