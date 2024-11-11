@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,28 +21,48 @@ public class Recruitment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long recruitmentId;
+  @NotNull
   private String koreanTitle;
+  @NotNull
   private String vietnameseTitle;
+  @NotNull
   private String companySize;
+  @NotNull
   private String area;
+  @NotNull
   private Long salary;
+  @NotNull
   private String workDuration;
+  @NotNull
   private String workDays;
+  @NotNull
   private String workType;
+  @NotNull
   private String workHours;
+  @NotNull
   private String requestedCareer;
+  @NotNull
   private String majorBusiness;
+  @NotNull
   private String eligibilityCriteria;
+  @NotNull
   private String preferredConditions;
+  @NotNull
   private String employerName;
+  @NotNull
   private String companyName;
+  @NotNull
   private Boolean hiring;
+  @NotNull
   private Date uploadDate;
 
   @ManyToOne
   @JoinColumn(name = "companyId")
+  @NotNull
   private Company company;
+
   @OneToOne
+  @NotNull
   private RecruitmentContent recruitmentContent;
 
   public Recruitment(String koreanTitle, String vietnameseTitle, String companySize, String area,
