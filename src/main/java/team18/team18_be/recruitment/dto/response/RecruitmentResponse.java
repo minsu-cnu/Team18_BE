@@ -4,6 +4,7 @@ public record RecruitmentResponse(
     String koreanTitle,
     String vietnameseTitle,
     String companySize,
+    String imageUrl,
     String area,
     Long salary,
     String workDuration,

@@ -71,7 +71,8 @@ public class RecruitmentService {
             recruitment.getVietnameseTitle(),
             recruitment.getCompanyName(),
             recruitment.getSalary(),
-            recruitment.getArea()
+            recruitment.getArea(),
+            recruitment.getWorkHours()
         ))
         .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -90,7 +91,8 @@ public class RecruitmentService {
                 recruitment.getVietnameseTitle(),
                 recruitment.getCompanyName(),
                 recruitment.getSalary(),
-                recruitment.getArea()
+                recruitment.getArea(),
+                recruitment.getWorkHours()
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -109,7 +111,8 @@ public class RecruitmentService {
                 recruitment.getVietnameseTitle(),
                 recruitment.getCompanyName(),
                 recruitment.getSalary(),
-                recruitment.getArea()
+                recruitment.getArea(),
+                recruitment.getWorkHours()
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -120,7 +123,7 @@ public class RecruitmentService {
     Recruitment recruitment = recruitmentRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
     return recruitmentMapper.toRecruitmentResponse(recruitment,
-        recruitment.getRecruitmentContent());
+        recruitment.getRecruitmentContent(),recruitment.getCompany().getLogoImage());
   }
 
   public List<RecruitmentResponseForCompany> getRecruitmentResponseByCompanyId(Long companyId) {

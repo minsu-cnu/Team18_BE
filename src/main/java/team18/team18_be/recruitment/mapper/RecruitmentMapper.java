@@ -21,5 +21,5 @@ public interface RecruitmentMapper {
       Date uploadDate);
 
   RecruitmentResponse toRecruitmentResponse(Recruitment recruitment,
-      RecruitmentContent recruitmentContent);
+      RecruitmentContent recruitmentContent,String imageUrl);
 }
