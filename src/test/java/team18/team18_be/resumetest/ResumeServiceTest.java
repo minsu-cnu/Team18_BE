@@ -106,7 +106,7 @@ public class ResumeServiceTest {
   @Test
   @Transactional
   @DisplayName("이력서 id로 이력서 찾고, 지원서 내용 추가")
-  public void findResumeByIdTest(){
+  public void findResumeByIdTest() {
     ResumeAndApplyResponse resumeAndApplyResponse = resumeService.findResumeById(resumeId, applyId);
     assertThat(resumeAndApplyResponse.applicantName()).isEqualTo("김민지");
     assertThat(resumeAndApplyResponse.motivation()).isEqualTo("한국어 실력을 늘리고자 지원했습니다.");
