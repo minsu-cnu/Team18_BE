@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import team18.team18_be.auth.entity.User;
@@ -20,17 +21,24 @@ public class Resume {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long resumeId;
+  @NotNull
   private String applicantName;
+  @NotNull
   private String address;
+  @NotNull
   private String phoneNumber;
+  @NotNull
   private String career;
+  @NotNull
   private String korean;
   @Lob
   @Column(columnDefinition = "TEXT")
+  @NotNull
   private String selfIntroduction;
 
   @ManyToOne
   @JoinColumn(name = "userId")
+  @NotNull
   private User user;
 
   public Resume(String applicantName, String address, String phoneNumber, String career,
