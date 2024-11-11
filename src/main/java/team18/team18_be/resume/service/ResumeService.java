@@ -7,6 +7,7 @@ import team18.team18_be.apply.entity.Apply;
 import team18.team18_be.apply.repository.ApplicationFormRepository;
 import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
+import team18.team18_be.exception.ResumeAlreadyExistsException;
 import team18.team18_be.resume.dto.request.ResumeRequest;
 import team18.team18_be.resume.dto.response.ResumeAndApplyResponse;
 import team18.team18_be.resume.dto.response.ResumeResponse;
@@ -49,4 +50,9 @@ public class ResumeService {
     return resumeMapper.toResumeAndApplyResponse(resume, applicationForm.getMotivation());
   }
 
+  public void existence(User user) {
+    if(resumeRepository.findByUser(user) != null){
+      throw new ResumeAlreadyExistsException("해당 유저에 대한 이력서가 존재합니다.");
+    }
+  }
 }
