@@ -57,7 +57,7 @@ public class RecruitmentService {
         koreanDetailedDescription);
     RecruitmentContent recruitmentContent = recruitmentContentRepository.save(
         new RecruitmentContent(koreanDetailedDescription, vietnameseDetailedDescription));
-   return recruitmentRepository.save(
+    return recruitmentRepository.save(
         recruitmentMapper.toRecruitment(koreanTitle, vietnameseTitle, recruitmentRequest,
             recruitmentContent, companyRepository.findById(recruitmentRequest.companyId())
                 .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다.")), true,
@@ -70,19 +70,19 @@ public class RecruitmentService {
     Page<Recruitment> recruitments = recruitmentRepository.findAllByHiringTrue(pageable);
     List<RecruitmentSummationResponse> recruitmentSummationResponseList =
         recruitments.stream()
-        .map(recruitment -> new RecruitmentSummationResponse(
-            recruitment.getRecruitmentId(),
-            recruitment.getCompany().getLogoImage(),
-            recruitment.getKoreanTitle(),
-            recruitment.getVietnameseTitle(),
-            recruitment.getCompanyName(),
-            recruitment.getSalary(),
-            recruitment.getArea(),
-            recruitment.getWorkHours()
-        ))
-        .collect(Collectors.toList());
+            .map(recruitment -> new RecruitmentSummationResponse(
+                recruitment.getRecruitmentId(),
+                recruitment.getCompany().getLogoImage(),
+                recruitment.getKoreanTitle(),
+                recruitment.getVietnameseTitle(),
+                recruitment.getCompanyName(),
+                recruitment.getSalary(),
+                recruitment.getArea(),
+                recruitment.getWorkHours()
+            ))
+            .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
-    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
+    return new RecruitmentAllResponse(recruitmentSummationResponseList, new PageDto(totalPage));
   }
 
   public RecruitmentAllResponse getAllRecruitmentAndSortBySalary(Pageable pageable) {
@@ -102,7 +102,7 @@ public class RecruitmentService {
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
-    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
+    return new RecruitmentAllResponse(recruitmentSummationResponseList, new PageDto(totalPage));
   }
 
   public RecruitmentAllResponse getAllRecruitmentAndSortByDate(Pageable pageable) {
@@ -122,14 +122,14 @@ public class RecruitmentService {
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
-    return new RecruitmentAllResponse(recruitmentSummationResponseList,new PageDto(totalPage));
+    return new RecruitmentAllResponse(recruitmentSummationResponseList, new PageDto(totalPage));
   }
 
   public RecruitmentResponse getRecruitmentResponseByRecruitmentId(Long userId) {
     Recruitment recruitment = recruitmentRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
     return recruitmentMapper.toRecruitmentResponse(recruitment,
-        recruitment.getRecruitmentContent(),recruitment.getCompany().getLogoImage());
+        recruitment.getRecruitmentContent(), recruitment.getCompany().getLogoImage());
   }
 
   public List<RecruitmentResponseForCompany> getRecruitmentResponseByCompanyId(Long companyId) {
@@ -149,12 +149,13 @@ public class RecruitmentService {
         .collect(Collectors.toList());
   }
 
-  public void setApplyHiringFalse(Recruitment recruitment){
+  public void setApplyHiringFalse(Recruitment recruitment) {
     List<Apply> applyList = applyRepository.findByRecruitment(recruitment)
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
     ApplyStatus status = ApplyStatus.HIRING_CLOSED;
     for (Apply apply : applyList) {
-      applyRepository.save(new Apply(apply.getId(),status.getKoreanName(),apply.getUser(),apply.getRecruitment()));
+      applyRepository.save(new Apply(apply.getId(), status.getKoreanName(), apply.getUser(),
+          apply.getRecruitment()));
     }
   }
 

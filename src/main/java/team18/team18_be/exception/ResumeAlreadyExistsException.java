@@ -1,6 +1,7 @@
 package team18.team18_be.exception;
 
-public class ResumeAlreadyExistsException extends RuntimeException{
+public class ResumeAlreadyExistsException extends RuntimeException {
+
   public ResumeAlreadyExistsException() {
   }
 

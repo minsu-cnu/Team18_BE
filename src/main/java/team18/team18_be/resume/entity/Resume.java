@@ -65,10 +65,17 @@ public class Resume {
     this.user = user;
   }
 
+  public Resume() {
+  }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Resume resume = (Resume) o;
     return Objects.equals(user.getId(), resume.user.getId());
   }
@@ -76,9 +83,6 @@ public class Resume {
   @Override
   public int hashCode() {
     return Objects.hash(user);
-  }
-
-  public Resume() {
   }
 
 }

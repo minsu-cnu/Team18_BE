@@ -16,81 +16,83 @@ import team18.team18_be.resume.entity.Resume;
 @Component
 public class ResumeMapperImpl implements ResumeMapper {
 
-    @Override
-    public ResumeResponse toResumeResponse(Resume resume) {
-        if ( resume == null ) {
-            return null;
-        }
-
-        Long resumeId = null;
-        String applicantName = null;
-        String address = null;
-        String phoneNumber = null;
-        String career = null;
-        String korean = null;
-        String selfIntroduction = null;
-
-        resumeId = resume.getResumeId();
-        applicantName = resume.getApplicantName();
-        address = resume.getAddress();
-        phoneNumber = resume.getPhoneNumber();
-        career = resume.getCareer();
-        korean = resume.getKorean();
-        selfIntroduction = resume.getSelfIntroduction();
-
-        ResumeResponse resumeResponse = new ResumeResponse( resumeId, applicantName, address, phoneNumber, career, korean, selfIntroduction );
-
-        return resumeResponse;
+  @Override
+  public ResumeResponse toResumeResponse(Resume resume) {
+    if (resume == null) {
+      return null;
     }
 
-    @Override
-    public ResumeAndApplyResponse toResumeAndApplyResponse(Resume resume, String motivation) {
-        if ( resume == null && motivation == null ) {
-            return null;
-        }
+    Long resumeId = null;
+    String applicantName = null;
+    String address = null;
+    String phoneNumber = null;
+    String career = null;
+    String korean = null;
+    String selfIntroduction = null;
 
-        Long resumeId = null;
-        String applicantName = null;
-        String address = null;
-        String phoneNumber = null;
-        String career = null;
-        String korean = null;
-        String selfIntroduction = null;
-        if ( resume != null ) {
-            resumeId = resume.getResumeId();
-            applicantName = resume.getApplicantName();
-            address = resume.getAddress();
-            phoneNumber = resume.getPhoneNumber();
-            career = resume.getCareer();
-            korean = resume.getKorean();
-            selfIntroduction = resume.getSelfIntroduction();
-        }
-        String motivation1 = null;
-        motivation1 = motivation;
+    resumeId = resume.getResumeId();
+    applicantName = resume.getApplicantName();
+    address = resume.getAddress();
+    phoneNumber = resume.getPhoneNumber();
+    career = resume.getCareer();
+    korean = resume.getKorean();
+    selfIntroduction = resume.getSelfIntroduction();
 
-        ResumeAndApplyResponse resumeAndApplyResponse = new ResumeAndApplyResponse( resumeId, applicantName, address, phoneNumber, career, korean, selfIntroduction, motivation1 );
+    ResumeResponse resumeResponse = new ResumeResponse(resumeId, applicantName, address,
+        phoneNumber, career, korean, selfIntroduction);
 
-        return resumeAndApplyResponse;
+    return resumeResponse;
+  }
+
+  @Override
+  public ResumeAndApplyResponse toResumeAndApplyResponse(Resume resume, String motivation) {
+    if (resume == null && motivation == null) {
+      return null;
     }
 
-    @Override
-    public Resume toResume(ResumeRequest resumeRequest, User user) {
-        if ( resumeRequest == null && user == null ) {
-            return null;
-        }
-
-        Resume resume = new Resume();
-
-        if ( resumeRequest != null ) {
-            resume.setApplicantName( resumeRequest.applicantName() );
-            resume.setAddress( resumeRequest.address() );
-            resume.setPhoneNumber( resumeRequest.phoneNumber() );
-            resume.setCareer( resumeRequest.career() );
-            resume.setKorean( resumeRequest.korean() );
-            resume.setSelfIntroduction( resumeRequest.selfIntroduction() );
-        }
-        resume.setUser( user );
-
-        return resume;
+    Long resumeId = null;
+    String applicantName = null;
+    String address = null;
+    String phoneNumber = null;
+    String career = null;
+    String korean = null;
+    String selfIntroduction = null;
+    if (resume != null) {
+      resumeId = resume.getResumeId();
+      applicantName = resume.getApplicantName();
+      address = resume.getAddress();
+      phoneNumber = resume.getPhoneNumber();
+      career = resume.getCareer();
+      korean = resume.getKorean();
+      selfIntroduction = resume.getSelfIntroduction();
     }
+    String motivation1 = null;
+    motivation1 = motivation;
+
+    ResumeAndApplyResponse resumeAndApplyResponse = new ResumeAndApplyResponse(resumeId,
+        applicantName, address, phoneNumber, career, korean, selfIntroduction, motivation1);
+
+    return resumeAndApplyResponse;
+  }
+
+  @Override
+  public Resume toResume(ResumeRequest resumeRequest, User user) {
+    if (resumeRequest == null && user == null) {
+      return null;
+    }
+
+    Resume resume = new Resume();
+
+    if (resumeRequest != null) {
+      resume.setApplicantName(resumeRequest.applicantName());
+      resume.setAddress(resumeRequest.address());
+      resume.setPhoneNumber(resumeRequest.phoneNumber());
+      resume.setCareer(resumeRequest.career());
+      resume.setKorean(resumeRequest.korean());
+      resume.setSelfIntroduction(resumeRequest.selfIntroduction());
+    }
+    resume.setUser(user);
+
+    return resume;
+  }
 }

@@ -51,7 +51,7 @@ public class ResumeService {
   }
 
   public void existence(User user) {
-    if(resumeRepository.findByUser(user) != null){
+    if (resumeRepository.findByUser(user) != null) {
       throw new ResumeAlreadyExistsException("해당 유저에 대한 이력서가 존재합니다.");
     }
   }
