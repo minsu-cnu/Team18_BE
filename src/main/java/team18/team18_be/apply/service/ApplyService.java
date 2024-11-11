@@ -92,7 +92,7 @@ public class ApplyService {
     Resume resume = resumeRepository.findByUser(applicantUser); //그 지원자의 이력서 가져오기
     return new ApplierPerRecruitmentResponse(
         applicantUser.getId(), applicantUser.getName(), resume.getResumeId(), apply.getId(),
-        "베트남", resume.getKorean()
+        "베트남", resume.getKoreanLanguageLevel()
     );
   }
 

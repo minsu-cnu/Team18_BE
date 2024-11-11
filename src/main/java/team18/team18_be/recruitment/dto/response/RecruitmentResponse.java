@@ -18,6 +18,7 @@ public record RecruitmentResponse(
     String eligibilityCriteria,
     String preferredConditions,
     String employerName,
+    String companyName,
     String koreanDetailedDescription,
     String vietnameseDetailedDescription
 
