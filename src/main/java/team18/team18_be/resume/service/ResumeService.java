@@ -31,8 +31,8 @@ public class ResumeService {
     this.applicationFormRepository = applicationFormRepository;
   }
 
-  public void saveResume(ResumeRequest resumeRequest, User user) {
-    resumeRepository.save(resumeMapper.toResume(resumeRequest, user));
+  public Long saveResume(ResumeRequest resumeRequest, User user) {
+    return resumeRepository.save(resumeMapper.toResume(resumeRequest, user)).getResumeId();
   }
 
   public ResumeResponse findResumeByEmployee(User user) {
