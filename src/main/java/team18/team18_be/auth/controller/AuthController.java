@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,7 +62,7 @@ public class AuthController {
     UserTypeResponse userTypeResponse = new UserTypeResponse(loginResponse.type(),
         loginResponse.profileImage(), loginResponse.name());
 
-    return new ResponseEntity<>(userTypeResponse, headers, HttpStatus.OK);
+    return ResponseEntity.ok().headers(headers).body(userTypeResponse);
   }
 
   @ApiResponse(responseCode = "204", description = "유저 타입 등록 성공")
@@ -71,6 +70,6 @@ public class AuthController {
   public ResponseEntity<Void> registerUserType(@Valid @RequestBody UserTypeRequest userTypeRequest,
       @LoginUser User user) {
     authService.registerUserType(userTypeRequest, user);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    return ResponseEntity.noContent().build();
   }
 }
