@@ -1,9 +1,11 @@
 package team18.team18_be.recruitment.dto.response;
 
+import com.mysql.cj.util.DnsSrv.SrvRecord;
+
 public record RecruitmentResponse(
     String koreanTitle,
     String vietnameseTitle,
-    String companySize,
+    String companyScale,
     String imageUrl,
     String area,
     Long salary,
