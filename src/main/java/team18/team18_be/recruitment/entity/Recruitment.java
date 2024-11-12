@@ -26,7 +26,7 @@ public class Recruitment {
   @NotNull
   private String vietnameseTitle;
   @NotNull
-  private String companySize;
+  private String companyScale;
   @NotNull
   private String area;
   @NotNull
@@ -65,7 +65,7 @@ public class Recruitment {
   @NotNull
   private RecruitmentContent recruitmentContent;
 
-  public Recruitment(String koreanTitle, String vietnameseTitle, String companySize, String area,
+  public Recruitment(String koreanTitle, String vietnameseTitle, String companyScale, String area,
       Long salary, String workDuration, String workDays, String workType, String workHours,
       String requestedCareer,
       String majorBusiness, String eligibilityCriteria, String preferredConditions,
@@ -73,7 +73,7 @@ public class Recruitment {
       RecruitmentContent recruitmentContent) {
     this.koreanTitle = koreanTitle;
     this.vietnameseTitle = vietnameseTitle;
-    this.companySize = companySize;
+    this.companyScale = companyScale;
     this.area = area;
     this.salary = salary;
     this.workDuration = workDuration;
