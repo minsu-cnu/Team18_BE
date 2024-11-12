@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class Resume {
   @NotNull
   private String introduction;
 
-  @ManyToOne
+  @OneToOne
   @JoinColumn(name = "userId")
   @NotNull
   private User user;
