@@ -57,7 +57,7 @@ public class UserInformationController {
   @PostMapping(value = "/company", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> createCompany(
       @RequestPart("companyRequest") String companyRequestJson,
-      @RequestPart MultipartFile logoImage, @LoginUser User user) {
+      @RequestPart(required = false) MultipartFile logoImage, @LoginUser User user) {
     ObjectMapper objectMapper = new ObjectMapper();
     CompanyRequest companyRequest = null;
     try {
