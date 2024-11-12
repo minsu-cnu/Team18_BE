@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
+import team18.team18_be.apply.entity.Apply;
+import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.config.infrastructure.OpenAiService;
 import team18.team18_be.recruitment.dto.request.RecruitmentRequest;
 import team18.team18_be.recruitment.dto.response.PageDto;
@@ -30,15 +33,18 @@ public class RecruitmentService {
   private final CompanyRepository companyRepository;
   private final OpenAiService openAiService;
   private final RecruitmentMapper recruitmentMapper;
+  private final ApplyRepository applyRepository;
 
   public RecruitmentService(RecruitmentRepository recruitmentRepository,
       RecruitmentContentRepository recruitmentContentRepository, OpenAiService openAiService,
-      CompanyRepository companyRepository, RecruitmentMapper recruitmentMapper) {
+      CompanyRepository companyRepository, RecruitmentMapper recruitmentMapper,
+      ApplyRepository applyRepository) {
     this.recruitmentRepository = recruitmentRepository;
     this.recruitmentContentRepository = recruitmentContentRepository;
     this.openAiService = openAiService;
     this.companyRepository = companyRepository;
     this.recruitmentMapper = recruitmentMapper;
+    this.applyRepository = applyRepository;
   }
 
   public Long saveRecruitment(RecruitmentRequest recruitmentRequest)
@@ -71,7 +77,8 @@ public class RecruitmentService {
                 recruitment.getVietnameseTitle(),
                 recruitment.getCompanyName(),
                 recruitment.getSalary(),
-                recruitment.getArea()
+                recruitment.getArea(),
+                recruitment.getWorkHours()
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -90,7 +97,8 @@ public class RecruitmentService {
                 recruitment.getVietnameseTitle(),
                 recruitment.getCompanyName(),
                 recruitment.getSalary(),
-                recruitment.getArea()
+                recruitment.getArea(),
+                recruitment.getWorkHours()
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -109,7 +117,8 @@ public class RecruitmentService {
                 recruitment.getVietnameseTitle(),
                 recruitment.getCompanyName(),
                 recruitment.getSalary(),
-                recruitment.getArea()
+                recruitment.getArea(),
+                recruitment.getWorkHours()
             ))
             .collect(Collectors.toList());
     int totalPage = recruitments.getTotalPages();
@@ -120,7 +129,7 @@ public class RecruitmentService {
     Recruitment recruitment = recruitmentRepository.findById(userId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 이력서가 존재하지 않습니다."));
     return recruitmentMapper.toRecruitmentResponse(recruitment,
-        recruitment.getRecruitmentContent());
+        recruitment.getRecruitmentContent(), recruitment.getCompany().getLogoImage());
   }
 
   public List<RecruitmentResponseForCompany> getRecruitmentResponseByCompanyId(Long companyId) {
@@ -140,10 +149,21 @@ public class RecruitmentService {
         .collect(Collectors.toList());
   }
 
+  public void setApplyHiringFalse(Recruitment recruitment) {
+    List<Apply> applyList = applyRepository.findByRecruitment(recruitment)
+        .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 존재하지 않습니다."));
+    ApplyStatus status = ApplyStatus.HIRING_CLOSED;
+    for (Apply apply : applyList) {
+      applyRepository.save(new Apply(apply.getId(), status.getKoreanName(), apply.getUser(),
+          apply.getRecruitment()));
+    }
+  }
+
   public void setRecruitmentHiringFalse(Long recruitmentId) {
     Recruitment recruitment = recruitmentRepository.findById(recruitmentId)
         .orElseThrow(() -> new NoSuchElementException("해당하는 회사가 존재하지 않습니다."));
     recruitment.setHiring(false);
+    setApplyHiringFalse(recruitment);
     recruitmentRepository.save(recruitment);
   }
 

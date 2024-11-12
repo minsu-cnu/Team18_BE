@@ -57,4 +57,13 @@ public class ResumeController {
     return ResponseEntity.ok().body(resumeService.findResumeById(resumeId, applyId));
   }
 
+  @Operation(summary = "해당 유저의 이력서 존재 여부 확인")
+  @GetMapping("/existence")
+  public ResponseEntity<Void> existence(
+      @LoginUser User user
+  ) {
+    resumeService.existence(user);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
 }

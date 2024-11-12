@@ -80,4 +80,11 @@ public class GlobalExceptionHandler {
     ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
     return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(value = ResumeAlreadyExistsException.class)
+  public ResponseEntity<ExceptionResponse> handleResumeAlreadyExistsException(
+      ResumeAlreadyExistsException e) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+  }
 }
