@@ -2,7 +2,7 @@ package team18.team18_be.recruitment.dto.request;
 
 public record RecruitmentRequest(
     String title,
-    String companySize,
+    String companyScale,
     String area,
     Long salary,
     String workDuration,

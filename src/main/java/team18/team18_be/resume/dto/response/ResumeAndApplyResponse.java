@@ -6,8 +6,8 @@ public record ResumeAndApplyResponse(
     String address,
     String phoneNumber,
     String career,
-    String korean,
-    String selfIntroduction,
+    String koreanLanguageLevel,
+    String introduction,
     String motivation
 ) {
 

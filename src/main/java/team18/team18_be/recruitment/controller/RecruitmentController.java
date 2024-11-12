@@ -73,7 +73,7 @@ public class RecruitmentController {
   }
 
   @Operation(summary = "구인글 마감 메서드")
-  @GetMapping("/hiringClose/{recruitmentId}")
+  @PostMapping("/hiringClose/{recruitmentId}")
   public ResponseEntity<Void> setRecruitmentHiringFalse(
       @PathVariable Long recruitmentId
   ) {
