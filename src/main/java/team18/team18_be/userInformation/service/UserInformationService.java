@@ -53,7 +53,7 @@ public class UserInformationService {
     byte[] imageFile = null;
     String storedFileName = null;
 
-    if (logoImage.isEmpty()) {
+    if (logoImage.isEmpty() || logoImage.getOriginalFilename().equals("")) {
       storedFileName = defaultLogoUrl;
     } else {
       imageFile = fileUtil.safelyGetBytes(logoImage)
