@@ -87,4 +87,11 @@ public class GlobalExceptionHandler {
     ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
     return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(value = ContractAlreadyExistsException.class)
+  public ResponseEntity<ExceptionResponse> handleContractAlreadyExistsException(
+      ContractAlreadyExistsException e) {
+    ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+  }
 }
