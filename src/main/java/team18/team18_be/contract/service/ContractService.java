@@ -79,6 +79,11 @@ public class ContractService {
     Apply apply = applyRepository.findById(request.applyId())
         .orElseThrow(() -> new NotFoundException("해당 applyId가 존재하지 않습니다."));
 
+    // 근로계약서 작성하기로 지원 상태 변경
+    ApplyStatus status = ApplyStatus.SIGNING_EMPLOYMENT_CONTRACT;
+    applyRepository.save(
+        new Apply(apply.getId(), status.getKoreanName(), apply.getUser(), apply.getRecruitment()));
+
     contractRepository.save(
         Contract.builder()
             .salary(request.salary())
