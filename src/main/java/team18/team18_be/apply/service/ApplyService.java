@@ -15,6 +15,7 @@ import team18.team18_be.apply.entity.Apply;
 import team18.team18_be.apply.repository.ApplicationFormRepository;
 import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
+import team18.team18_be.contract.repository.ContractRepository;
 import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.repository.RecruitmentRepository;
 import team18.team18_be.resume.entity.Resume;
@@ -34,13 +35,14 @@ public class ApplyService {
   private final CompanyRepository companyRepository;
   private final ForeignerInformationRepository foreignerInformationRepository;
   private final SignRepository signRepository;
+  private final ContractRepository contractRepository;
 
 
   public ApplyService(ApplicationFormRepository applicationFormRepository,
       ApplyRepository applyRepository, RecruitmentRepository recruitmentRepository,
       ResumeRepository resumeRepository, CompanyRepository companyRepository,
       ForeignerInformationRepository foreignerInformationRepository,
-      SignRepository signRepository) {
+      SignRepository signRepository, ContractRepository contractRepository) {
     this.applicationFormRepository = applicationFormRepository;
     this.applyRepository = applyRepository;
     this.recruitmentRepository = recruitmentRepository;
@@ -48,6 +50,7 @@ public class ApplyService {
     this.companyRepository = companyRepository;
     this.foreignerInformationRepository = foreignerInformationRepository;
     this.signRepository = signRepository;
+    this.contractRepository = contractRepository;
   }
 
   public Long createApplicationForm(ApplicationFormRequest applicationFormRequest,
@@ -88,9 +91,10 @@ public class ApplyService {
   private ApplierPerRecruitmentResponse createApplierPerRecruitmentResponse(Apply apply) {
     User applicantUser = apply.getUser();
     Resume resume = resumeRepository.findByUser(applicantUser); //그 지원자의 이력서 가져오기
+    boolean contractExistence = contractRepository.findByApplyId(apply.getId()).isPresent();
     return new ApplierPerRecruitmentResponse(
         applicantUser.getId(), applicantUser.getName(), resume.getResumeId(), apply.getId(),
-        "베트남", resume.getKoreanLanguageLevel()
+        "베트남", resume.getKoreanLanguageLevel(), contractExistence
     );
   }
 
