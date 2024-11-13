@@ -49,23 +49,34 @@ public class UserInformationService {
     this.fileUtil = fileUtil;
   }
 
-  public Long createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
-    byte[] imageFile = null;
-    String storedFileName = null;
 
+  public Long createCompany(CompanyRequest companyRequest, MultipartFile logoImage, User user) {
+    String storedFileName = getStoredFileName(logoImage, user);
+    Company company = createCompanyEntity(companyRequest, storedFileName, user);
+    return companyRepository.save(company).getId();
+  }
+
+  private String getStoredFileName(MultipartFile logoImage, User user) {
     if (logoImage == null) {
-      storedFileName = defaultLogoUrl;
-    } else {
-      imageFile = fileUtil.safelyGetBytes(logoImage)
-          .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
-      storedFileName = gcsUploader.upload(imageFile, "companyLogo",
-              user.getId().toString() + "Real" + logoImage.getOriginalFilename())
-          .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
+      return defaultLogoUrl;
     }
-    Company company = new Company(companyRequest.name(), companyRequest.industryOccupation(),
-        companyRequest.brand(), companyRequest.revenuePerYear(), storedFileName, user);
-    Company savedCompany = companyRepository.save(company);
-    return savedCompany.getId();
+    byte[] imageFile = fileUtil.safelyGetBytes(logoImage)
+        .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
+
+    return gcsUploader.upload(imageFile, "companyLogo",
+            user.getId() + "Real" + logoImage.getOriginalFilename())
+        .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
+  }
+
+  private Company createCompanyEntity(CompanyRequest request, String logoUrl, User user) {
+    return new Company(
+        request.name(),
+        request.industryOccupation(),
+        request.brand(),
+        request.revenuePerYear(),
+        logoUrl,
+        user
+    );
   }
 
   public List<CompanyResponse> findCompany(User user) {
