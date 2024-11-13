@@ -63,7 +63,8 @@ public class UserInformationService {
     byte[] imageFile = fileUtil.safelyGetBytes(logoImage)
         .orElseThrow(() -> new IllegalArgumentException("multipart 파일을 읽지 못하였습니다."));
 
-    return gcsUploader.upload(imageFile, "companyLogo", user.getId() + "Real" + logoImage.getOriginalFilename())
+    return gcsUploader.upload(imageFile, "companyLogo",
+            user.getId() + "Real" + logoImage.getOriginalFilename())
         .orElseThrow(() -> new NoSuchElementException("파일 업로드에 실패했습니다."));
   }
 
