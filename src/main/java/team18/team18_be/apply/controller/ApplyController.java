@@ -22,7 +22,7 @@ import team18.team18_be.config.resolver.LoginUser;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/application")
 @Tag(name = "지원 API")
 public class ApplyController {
 
