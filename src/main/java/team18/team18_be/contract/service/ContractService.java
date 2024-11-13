@@ -3,6 +3,7 @@ package team18.team18_be.contract.service;
 import com.itextpdf.text.DocumentException;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import team18.team18_be.apply.ApplyStatusEnum.ApplyStatus;
 import team18.team18_be.apply.entity.Apply;
@@ -15,6 +16,7 @@ import team18.team18_be.contract.dto.response.ContractFileResponse;
 import team18.team18_be.contract.dto.response.ContractResponse;
 import team18.team18_be.contract.entity.Contract;
 import team18.team18_be.contract.repository.ContractRepository;
+import team18.team18_be.exception.ContractAlreadyExistsException;
 import team18.team18_be.exception.NotFoundException;
 
 @Service
@@ -35,6 +37,12 @@ public class ContractService {
 
   public void handleEmployerContractCreation(ContractRequest request, User user)
       throws DocumentException, IOException {
+
+    Optional<Contract> optional = contractRepository.findByApplyId(request.applyId());
+
+    if (!optional.isEmpty()) {
+      throw new ContractAlreadyExistsException("이미 생성된 근로계약서입니다.");
+    }
 
     String dirName = "contracts";
     String fileName = user.getId() + "_" + request.applyId() + ".pdf";
