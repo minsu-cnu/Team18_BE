@@ -74,7 +74,7 @@ public class ApplyService {
     return applicationFormResponse;
   }
 
-
+  //(고용주입장)구인글에 지원한 지원자 확인
   public List<ApplierPerRecruitmentResponse> searchApplicant(Long recruitmentId, User user) {
     Recruitment recruitment = findRecruitment(recruitmentId);
 
@@ -94,6 +94,7 @@ public class ApplyService {
     );
   }
 
+  //(지원자 입장) 자신이 지원한 곳들 확인하는 메서드
   public List<RecruitmentsOfApplierResponse> searchMyAppliedRecruitments(User user) {
     return applyRepository.findByUser(user)
         .orElseThrow(() -> new NoSuchElementException("해당하는 지원이 없습니다."))
