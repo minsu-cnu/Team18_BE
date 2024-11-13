@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class Contract {
   private String pdfFileUrl;
   private String imageFileUrlV;
   private String pdfFileUrlV;
-  @ManyToOne
+  @OneToOne
   @JoinColumn(name = "applyId")
   private Apply apply;
 
