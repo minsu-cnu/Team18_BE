@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -87,8 +88,8 @@ public class UserInformationController {
   }
 
   @Operation(summary = "비자 정보 가져오기")
-  @GetMapping("/visa")
-  public ResponseEntity<VisaResponse> findVisa(@RequestParam("userId") Long userId) {
+  @GetMapping("/visa/{userId}")
+  public ResponseEntity<VisaResponse> findVisa(@PathVariable("userId") Long userId) {
     VisaResponse visaResponse = userInformationService.findVisa(userId);
     return ResponseEntity.ok(visaResponse);
   }
