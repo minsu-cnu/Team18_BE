@@ -121,7 +121,7 @@ public class userInformationServiceTest {
     //then
     assertEquals(foreignerInformation.getForeignerIdNumber(), visaResponse.foreignerIdNumber());
     assertEquals(foreignerInformation.getVisaGenerateDate().toString(),
-        visaResponse.visaGenereteDate());
+        visaResponse.visaGenerateDate());
     assertEquals(foreignerInformation.getVisaExpiryDate().toString(),
         visaResponse.visaExpiryDate());
   }
