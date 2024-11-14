@@ -119,7 +119,7 @@ public class userInformationServiceTest {
     //when
     VisaResponse visaResponse = userInformationService.findVisa(employeeId);
     //then
-    assertEquals(foreignerInformation.getForeignerIdNumber(), visaResponse.foreginerNumber());
+    assertEquals(foreignerInformation.getForeignerIdNumber(), visaResponse.foreignerIdNumber());
     assertEquals(foreignerInformation.getVisaGenerateDate().toString(),
         visaResponse.visaGenereteDate());
     assertEquals(foreignerInformation.getVisaExpiryDate().toString(),
