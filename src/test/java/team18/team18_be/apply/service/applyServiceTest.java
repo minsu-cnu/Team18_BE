@@ -2,6 +2,7 @@ package team18.team18_be.apply.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +25,8 @@ import team18.team18_be.apply.entity.Apply;
 import team18.team18_be.apply.repository.ApplicationFormRepository;
 import team18.team18_be.apply.repository.ApplyRepository;
 import team18.team18_be.auth.entity.User;
+import team18.team18_be.contract.entity.Contract;
+import team18.team18_be.contract.repository.ContractRepository;
 import team18.team18_be.recruitment.entity.Recruitment;
 import team18.team18_be.recruitment.entity.RecruitmentContent;
 import team18.team18_be.recruitment.repository.RecruitmentRepository;
@@ -45,6 +48,8 @@ public class applyServiceTest {
   private ResumeRepository resumeRepository;
   @Mock
   private CompanyRepository companyRepository;
+  @Mock
+  private ContractRepository contractRepository;
   @InjectMocks
   private ApplyService applyService;
   private User employee;
@@ -55,6 +60,7 @@ public class applyServiceTest {
   private Apply apply;
   private Resume resume;
   private ApplicationForm applicationForm;
+  private Contract contract;
 
 
   @BeforeEach
@@ -75,6 +81,9 @@ public class applyServiceTest {
     apply = new Apply(1L, ApplyStatus.REVIEWING_APPLICATION.getKoreanName(), employee,
         recruitment);
     applicationForm = new ApplicationForm("홍길동", "123 street", "01012345678", "myMotivation",
+        apply);
+    contract = new Contract(1L, 1, "workinghours", "dayOff", "annulPaidLeave", "workingPlace",
+        "responsibilities", "rule", "imageFileUrl", "pdfFileUrl", "imageFeilUrlV", "pdfFileUrlV",
         apply);
   }
 
@@ -108,11 +117,11 @@ public class applyServiceTest {
     Long recruitmentId = 1L;
     List<Apply> applies = Stream.of(apply).collect(Collectors.toList());
     when(recruitmentRepository.findById(recruitmentId)).thenReturn(
-        Optional.ofNullable(recruitment));
+        Optional.of(recruitment));
     when(applyRepository.findByRecruitment(recruitment)).thenReturn(
-        Optional.ofNullable(applies));
+        Optional.of(applies));
     when(resumeRepository.findByUser(employee)).thenReturn(resume);
-
+    when(contractRepository.findByApplyId(1L)).thenReturn(Optional.of(contract));
     //when
     List<ApplierPerRecruitmentResponse> responses = applyService.searchApplicant(
         recruitmentId, employer);
@@ -120,6 +129,8 @@ public class applyServiceTest {
     //then
     assertNotNull(responses);
     assertEquals(applies.size(), responses.size());
+    boolean contractExistence = contractRepository.findByApplyId(1L).isPresent();
+    assertTrue(contractExistence);
   }
 
   @Test
