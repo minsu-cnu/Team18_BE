@@ -105,7 +105,7 @@ jobs:
       - name: Deploy to GCP
         run: |
           # scp로 VM에 jar 파일 전송
-          scp -o StrictHostKeyChecking=no -i ./key-hirehigher ./team18-be-0.0.1-SNAPSHOT.jar hirehigher@${{ secrets.GCP_VM_IP }}:/home/hirehigher/repository
+          scp -i ./key-hirehigher ./team18-be-0.0.1-SNAPSHOT.jar hirehigher@${{ secrets.GCP_VM_IP }}:/home/hirehigher/repository
 
       - name: Remove GitHub Actions IP from GCP Firewall
         run: |
