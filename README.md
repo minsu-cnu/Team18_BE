@@ -64,7 +64,6 @@
 - **배포링크(FE)**: https://hire-higher.netlify.app/
 - **배포링크(BE)**: https://api.hirehigher.site/
 - **스토리북 배포링크** : https://66e528a32564a3669b75354b-qfpivukyah.chromatic.com/
-- 테스트 계정 👉 [테스트 계정 작성 Docs](https://docs.google.com/document/d/1VoffobzXcm2mFtgs4jn7Y1EFjfPo9qu0/edit?usp=sharing&ouid=106651828097466189075&rtpof=true&sd=true)
   
 ### 개발 문서
 
